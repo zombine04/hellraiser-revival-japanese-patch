@@ -7,6 +7,16 @@ from jp_patch.release import GitHub, publish
 
 
 class ReleaseLookupTests(unittest.TestCase):
+    def test_draft_uses_reviewed_release_notes(self):
+        notes=Path('docs/releases/v1.0.0.md')
+        github=GitHub('example/test',notes_file=notes)
+        github.cli=Mock()
+        github.create_draft('v1.0.0','a'*40)
+        args=github.cli.call_args.args
+        self.assertEqual(args[-2:],('--notes-file',str(notes)))
+        self.assertNotIn('--generate-notes',args)
+        self.assertIn('--draft',args)
+
     def test_draft_without_tag_is_found_on_later_page(self):
         github=GitHub('example/test')
         unrelated=[dict(draft=False,tag_name=f'v0.0.{i}') for i in range(100)]

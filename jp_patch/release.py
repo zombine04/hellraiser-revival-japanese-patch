@@ -7,10 +7,11 @@ import tempfile
 
 
 class GitHub:
-    def __init__(self, repository):
+    def __init__(self, repository, *, notes_file=None):
         if not re.fullmatch(r'[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+',repository):
             raise ValueError('リポジトリ指定が不正です')
         self.repository=repository
+        self.notes_file=notes_file
 
     def cli(self,*args):
         result=subprocess.run(['gh',*args],capture_output=True,text=True)
@@ -53,7 +54,8 @@ class GitHub:
         raise ValueError('タグの参照先を確定できません')
 
     def create_draft(self,tag,commit):
-        self.cli('release','create',tag,'--repo',self.repository,'--draft','--target',commit,'--title','日本語化パッチ '+tag,'--generate-notes')
+        notes=['--notes-file',str(self.notes_file)] if self.notes_file else ['--generate-notes']
+        self.cli('release','create',tag,'--repo',self.repository,'--draft','--target',commit,'--title','日本語化パッチ '+tag,*notes)
 
     def upload(self,tag,files):
         self.cli('release','upload',tag,'--repo',self.repository,'--clobber',*[str(f) for f in files])

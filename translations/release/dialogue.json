@@ -1727,7 +1727,7 @@
       "key": "VX_Mission01_01Prison_CellAwake_GaP6_Marlowe",
       "key_hash": 1582381652,
       "source_hash": 884281649,
-      "ja": "心配は無用だ、兄弟エイダン。ブルーノは血管を避けるすべを心得ている",
+      "ja": "心配は無用だ、ブラザー・エイダン。ブルーノは血管を避けるすべを心得ている",
       "status": "reviewed",
       "display_checked": false
     },
@@ -2528,7 +2528,7 @@
       "key": "VX_Mission01_04AltarRoom_CharlotteTransformation_eCdd_Marlowe",
       "key_hash": 3322869602,
       "source_hash": 2216773136,
-      "ja": "箱を欲しているようだな、兄弟エイダン",
+      "ja": "箱を欲しているようだな、ブラザー・エイダン",
       "status": "reviewed",
       "display_checked": false
     },
@@ -4288,7 +4288,7 @@
       "key": "VX_Mission01_02Club_OrgyTalk_4865_Cultist01",
       "key_hash": 4061960103,
       "source_hash": 94285739,
-      "ja": "さあ、祝え！　我らが敬虔なる姉妹シャーロットを称えよ！",
+      "ja": "さあ、祝え！　我らが敬虔なるシスター・シャーロットを称えよ！",
       "status": "reviewed",
       "display_checked": false
     },
