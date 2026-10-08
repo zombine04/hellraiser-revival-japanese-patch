@@ -15,7 +15,7 @@ def main():
     version=(ROOT/'VERSION').read_text('ascii').strip()
     if not re.fullmatch(r'\d+\.\d+\.\d+',version):
         raise ValueError('VERSIONが不正です')
-    package=ROOT/'dist'/f'Hellraiser_Revival_Demo_Japanese_v{version}.zip'
+    package=ROOT/'dist'/f'Hellraiser_Revival_Japanese_v{version}.zip'
     checksum=package.with_suffix('.sha256')
     check(package,release=True)
     if checksum.read_text('ascii')!=f'{sha256(package)}  {package.name}\n':

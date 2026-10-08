@@ -16,7 +16,7 @@ class ArtifactComparisonTests(unittest.TestCase):
             self.prepare(folder, b'self-authored package')
 
     def prepare(self, folder, payload):
-        package = folder/'Hellraiser_Revival_Demo_Japanese_v1.0.0.zip'
+        package = folder/'Hellraiser_Revival_Japanese_v1.0.0.zip'
         package.write_bytes(payload)
         package.with_suffix('.sha256').write_text(f'{hashlib.sha256(payload).hexdigest()}  {package.name}\n', encoding='ascii')
 
@@ -29,7 +29,7 @@ class ArtifactComparisonTests(unittest.TestCase):
             compare(self.folders, '1.0.0')
 
     def test_missing_or_corrupt_checksum_fails(self):
-        package = self.folders[1]/'Hellraiser_Revival_Demo_Japanese_v1.0.0.zip'
+        package = self.folders[1]/'Hellraiser_Revival_Japanese_v1.0.0.zip'
         package.write_bytes(b'corrupt')
         with self.assertRaises(ValueError):
             compare(self.folders, '1.0.0')

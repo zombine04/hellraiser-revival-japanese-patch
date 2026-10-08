@@ -10,7 +10,7 @@ from jp_patch.tools import ROOT, sha256
 def compare(folders, version):
     if len(folders) < 2:
         raise ValueError('照合には2つ以上の成果物が必要です')
-    name = f'Hellraiser_Revival_Demo_Japanese_v{version}.zip'
+    name = f'Hellraiser_Revival_Japanese_v{version}.zip'
     digests = set()
     for folder in folders:
         package = folder/name
@@ -29,5 +29,6 @@ def compare(folders, version):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('folders', type=Path, nargs='+')
+    parser.add_argument('--preview', action='store_true')
     args = parser.parse_args()
-    print('環境間の成果物一致: '+compare(args.folders, (ROOT/'VERSION').read_text('ascii').strip()))
+    print('環境間の成果物一致: '+compare(args.folders, (ROOT/'VERSION').read_text('ascii').strip() + ('-preview' if args.preview else '')))

@@ -11,6 +11,7 @@ import zipfile
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 from jp_patch.build import STEM, build_fonts
 from jp_patch.locres import loads
+from jp_patch.runtime_text import runtime_text
 from jp_patch.tools import ROOT, repak
 from jp_patch.translation_set import load_regions
 from jp_patch.regions import REGIONS, coverage
@@ -29,6 +30,8 @@ def check(path, *, release=False):
     if files['SHA256SUMS.txt'] != expected.encode():
         raise ValueError('チェックサム一覧が一致しません')
     manifest=json.loads(files['manifest.json'])
+    if manifest['product'] != 'hellraiser-revival-japanese':
+        raise ValueError('製品版用の配布物ではありません')
     if release and (manifest['preview'] or manifest['patch_version'] != (ROOT/'VERSION').read_text().strip()):
         raise ValueError('試作版またはVERSIONと異なる版は正式公開できません')
     regions=load_regions(ROOT,preview=manifest['preview'],release=release)
@@ -54,7 +57,7 @@ def check(path, *, release=False):
         subprocess.run([str(repak()),'unpack',str(pak),'-o',str(unpacked)],check=True,capture_output=True)
         for region in REGIONS:
             actual={(e.namespace,e.key):(e.namespace_hash,e.key_hash,e.source_hash,e.text) for e in loads((unpacked/region.locres).read_bytes())}
-            expected={(r['namespace'],r['key']):(r['namespace_hash'],r['key_hash'],r['source_hash'],r['ja']) for r in regions[region.name]['rows'] if r['status'] != 'untranslated'}
+            expected={(r['namespace'],r['key']):(r['namespace_hash'],r['key_hash'],r['source_hash'],runtime_text(r)) for r in regions[region.name]['rows'] if r['status'] != 'untranslated'}
             if actual != expected:
                 raise ValueError('収録LocResが領域別の公開訳文と一致しません')
     return report

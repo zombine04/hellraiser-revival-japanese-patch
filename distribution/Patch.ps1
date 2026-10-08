@@ -3,9 +3,9 @@
 param([ValidateSet('Install','Uninstall')][string]$Action='Install', [string]$GameDir, [switch]$NonInteractive, [switch]$AllowUnsupported)
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
-$product = 'hellraiser-revival-demo-japanese'
-$managedNames = @('Hellraiser_Japanese_P.pak','Hellraiser_Japanese_P.utoc','Hellraiser_Japanese_P.ucas')
-$stateName = '.hellraiser-japanese-patch.json'
+$product = 'hellraiser-revival-japanese'
+$managedNames = @('Hellraiser_Revival_Japanese_P.pak','Hellraiser_Revival_Japanese_P.utoc','Hellraiser_Revival_Japanese_P.ucas')
+$stateName = '.hellraiser-revival-japanese-patch.json'
 $utf8 = New-Object System.Text.UTF8Encoding($false)
 function Fail([string]$Message) { throw [InvalidOperationException]::new($Message) }
 function Read-Json([string]$Path) {
@@ -32,6 +32,35 @@ function Assert-NoLink([string]$Path) {
 function Assert-GameStopped {
     if (@(Get-Process -Name 'Hellraiser','Hellraiser-Win64-Shipping' -ErrorAction SilentlyContinue).Count) { Fail 'ゲームを終了してから実行してください。' }
 }
+function Get-SteamRetailCandidate([string]$Library) {
+    $manifestPath = Join-Path $Library 'steamapps\appmanifest_1551980.acf'
+    if (!(Test-Path -LiteralPath $manifestPath -PathType Leaf)) { return }
+    try { $manifestText = [IO.File]::ReadAllText($manifestPath) }
+    catch { return }
+    $ids = [regex]::Matches($manifestText, '"appid"\s+"([^"\r\n]*)"')
+    $folders = [regex]::Matches($manifestText, '"installdir"\s+"([^"\r\n]*)"')
+    if ($ids.Count -ne 1 -or $ids[0].Groups[1].Value -cne '1551980' -or $folders.Count -ne 1) { return }
+    $folder = $folders[0].Groups[1].Value
+    if ([string]::IsNullOrWhiteSpace($folder) -or $folder -in @('.','..') -or $folder.IndexOfAny([IO.Path]::GetInvalidFileNameChars()) -ge 0) { return }
+    $candidate = [IO.Path]::GetFullPath((Join-Path (Join-Path $Library 'steamapps\common') $folder)).Replace('/','\').TrimEnd('\')
+    if (Test-Path -LiteralPath (Join-Path $candidate 'Hellraiser\Content\Paks') -PathType Container) { return $candidate }
+}
+function Assert-RetailGame([string]$Directory, [string]$Version) {
+    if ($Version -match 'HellraiserGameDemo') { Fail 'デモ版には製品版用パッチを適用できません。' }
+    if ($Version -cmatch '^[0-9][A-Za-z0-9._-]*_HellraiserGame_Shipping_[A-Za-z0-9._-]+$') { return }
+    # Version.txtが欠けた場合も、Steamの製品版AppIDと導入先が一致したときだけ判定する。
+    if ([string]::IsNullOrWhiteSpace($Version)) {
+        $common = [IO.Directory]::GetParent($Directory)
+        if ($null -ne $common -and $common.Name -ieq 'common' -and $null -ne $common.Parent -and $common.Parent.Name -ieq 'steamapps') {
+            $library = $common.Parent.Parent
+            if ($null -ne $library) {
+                $candidate = Get-SteamRetailCandidate $library.FullName
+                if ($candidate -and [string]::Equals($candidate, $Directory.TrimEnd('\'), [StringComparison]::OrdinalIgnoreCase)) { return }
+            }
+        }
+    }
+    Fail '製品版のインストール先と確認できません。Steamの製品版フォルダーを指定してください。'
+}
 function Get-SteamGameCandidates([string[]]$SteamRoots) {
     $libraries = @($SteamRoots)
     foreach ($steamRoot in $SteamRoots) {
@@ -45,7 +74,8 @@ function Get-SteamGameCandidates([string[]]$SteamRoots) {
     $seen = @{}
     foreach ($library in $libraries) {
         if ([string]::IsNullOrWhiteSpace($library)) { continue }
-        $candidate = [IO.Path]::GetFullPath((Join-Path $library "steamapps\common\Clive Barker's Hellraiser Revival Demo")).Replace('/','\').TrimEnd('\')
+        $candidate = Get-SteamRetailCandidate $library
+        if (!$candidate) { continue }
         # PowerShellの通常のハッシュテーブルは大文字小文字を区別しない。
         if (!$seen.ContainsKey($candidate) -and (Test-Path -LiteralPath (Join-Path $candidate 'Hellraiser\Content\Paks') -PathType Container)) {
             $seen[$candidate] = $true
@@ -129,7 +159,7 @@ try {
     if (!(Test-Path -LiteralPath $pakDir -PathType Container)) { Fail '対象のゲームフォルダーではありません。' }
     $statePath = Join-Path $pakDir $stateName
     Assert-NoLink $statePath
-    $lockPath = Join-Path $pakDir '.hellraiser-japanese-patch.lock'
+    $lockPath = Join-Path $pakDir '.hellraiser-revival-japanese-patch.lock'
     try { $lock = [IO.File]::Open($lockPath,[IO.FileMode]::CreateNew,[IO.FileAccess]::Write,[IO.FileShare]::None) }
     catch { Fail '書き込み権限がないか、別の処理が実行中です。ロックが残る場合はREADMEを参照してください。' }
     $oldState = $null
@@ -150,13 +180,14 @@ try {
     if ($Action -eq 'Uninstall' -and $null -eq $oldState) { Write-Output 'このパッチは導入されていません。' }
     else {
         if ($Action -eq 'Install') {
-            foreach ($trialStem in @('Hellraiser_Japanese_Probe_P','Hellraiser_Japanese_Font_P')) {
+            foreach ($trialStem in @('Hellraiser_Japanese_P','Hellraiser_Japanese_Probe_P','Hellraiser_Japanese_Font_P','Hellraiser_Revival_Japanese_Probe_P')) {
                 foreach ($ext in @('pak','utoc','ucas')) {
                     if (Test-Path -LiteralPath (Join-Path $pakDir ($trialStem+'.'+$ext))) {
-                        Fail '表示確認用の試作パッチが残っています。試作で追加したファイルを確認してから切り替えてください。'
+                        Fail 'デモ版用または旧試作のパッチが残っています。導入元の手順で削除してから切り替えてください。'
                     }
                 }
             }
+            if (Test-Path -LiteralPath (Join-Path $pakDir '.hellraiser-japanese-patch.json')) { Fail 'デモ版用パッチの管理情報が残っています。導入元の手順で削除してください。' }
             Assert-Package
             $manifest = Read-Json (Join-Path $PSScriptRoot 'manifest.json')
             if ($manifest.schema_version -ne 1 -or $manifest.product -cne $product -or $manifest.patch_version -cnotmatch '^\d+\.\d+\.\d+(?:-[a-z0-9.]+)?$') { Fail '配布物の対応情報が不正です。' }
@@ -172,6 +203,7 @@ try {
                 try { $installedVersion = [IO.File]::ReadAllText($versionPath, [Text.Encoding]::UTF8).Trim() }
                 catch { $installedVersion = '' }
             }
+            Assert-RetailGame $GameDir $installedVersion
             if ($installedVersion -cnotin $supportedVersions) { Confirm-Unsupported $installedVersion $supportedVersions }
         }
         Assert-GameStopped
@@ -204,7 +236,7 @@ try {
             }
             Fail '処理に失敗したため、処理前の状態に戻しました。'
         }
-        if ($Action -eq 'Install') { Write-Output '導入完了。ゲームの言語設定で簡体字中国語（日本語）を選択してください。' }
+        if ($Action -eq 'Install') { Write-Output '導入完了。ゲームの言語設定で「日本語」を選択してください。' }
         else { Write-Output '削除完了。ゲーム本体とセーブデータは変更していません。' }
     }
 } catch {
