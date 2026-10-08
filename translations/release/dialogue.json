@@ -13505,66 +13505,6 @@
     {
       "namespace": "ST_VO_Generic",
       "namespace_hash": 3039387753,
-      "key": "VX_Generic_CombatBarks_IdleToInvestigateHeardSolo_5dsc_Cultist03",
-      "key_hash": 818492198,
-      "source_hash": 2281319894,
-      "ja": "何か聞こえた…",
-      "status": "reviewed",
-      "display_checked": false
-    },
-    {
-      "namespace": "ST_VO_Generic",
-      "namespace_hash": 3039387753,
-      "key": "VX_Generic_CombatBarks_IdleToInvestigateHeardSolo_D5sJ_FCultist01",
-      "key_hash": 2489727353,
-      "source_hash": 2281319894,
-      "ja": "何か聞こえた…",
-      "status": "reviewed",
-      "display_checked": false
-    },
-    {
-      "namespace": "ST_VO_Generic",
-      "namespace_hash": 3039387753,
-      "key": "VX_Generic_CombatBarks_IdleToInvestigateHeardSolo_gykc_Cultist01",
-      "key_hash": 1776081013,
-      "source_hash": 2281319894,
-      "ja": "何か聞こえた…",
-      "status": "reviewed",
-      "display_checked": false
-    },
-    {
-      "namespace": "ST_VO_Generic",
-      "namespace_hash": 3039387753,
-      "key": "VX_Generic_CombatBarks_IdleToInvestigateHeardSolo_pYau_Cultist02",
-      "key_hash": 3264835710,
-      "source_hash": 2281319894,
-      "ja": "何か聞こえた…",
-      "status": "reviewed",
-      "display_checked": false
-    },
-    {
-      "namespace": "ST_VO_Generic",
-      "namespace_hash": 3039387753,
-      "key": "VX_Generic_CombatBarks_IdleToInvestigateHeardSolo_v4Fx_FCultist02",
-      "key_hash": 1187755960,
-      "source_hash": 2281319894,
-      "ja": "何か聞こえた…",
-      "status": "reviewed",
-      "display_checked": false
-    },
-    {
-      "namespace": "ST_VO_Generic",
-      "namespace_hash": 3039387753,
-      "key": "VX_Generic_CombatBarks_IdleToInvestigateHeardSolo_vGwA_FCultist03",
-      "key_hash": 1502292646,
-      "source_hash": 2281319894,
-      "ja": "何か聞こえた…",
-      "status": "reviewed",
-      "display_checked": false
-    },
-    {
-      "namespace": "ST_VO_Generic",
-      "namespace_hash": 3039387753,
       "key": "VX_Generic_CombatBarks_IdleToStarteled_FFXZ_FCultist02",
       "key_hash": 2024559344,
       "source_hash": 1093011727,

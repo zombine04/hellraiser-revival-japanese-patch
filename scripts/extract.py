@@ -15,6 +15,9 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--game-dir', type=Path, required=True)
     args = parser.parse_args()
+    version = (args.game_dir / 'Version.txt').read_text('utf-8-sig').strip()
+    if '_HellraiserGame_Shipping_' not in version or 'HellraiserGameDemo' in version:
+        raise ValueError('製品版のゲームフォルダーを指定してください')
     original = args.game_dir / 'Hellraiser/Content/Paks/pakchunk0-Windows.pak'
     if not original.is_file():
         raise ValueError('指定先に対象ゲームのPakがありません')
@@ -41,7 +44,7 @@ def main():
     english = {e.identity: e for e in entries['en']}
     chinese = {e.identity: e for e in entries['zh-Hans']}
     summary = {
-        'game_version': (args.game_dir / 'Version.txt').read_text('utf-8').strip(),
+        'game_version': version,
         'original_pak_sha256': sha256(original),
         'counts': {k: len(v) for k, v in entries.items()},
         'english_only': len(english.keys() - chinese.keys()),

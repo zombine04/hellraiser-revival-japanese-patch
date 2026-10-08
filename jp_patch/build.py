@@ -11,12 +11,13 @@ import zipfile
 from .catalog import read_json
 from .fonts import ASSETS, write_assets
 from .locres import Entry, dumps, loads
+from .runtime_text import runtime_text
 from .tools import ROOT, repak, retoc, sha256
 from .translation_set import load_regions
 from .regions import GAME, REGIONS, coverage
 
 RELATIVE = GAME.locres
-STEM = 'Hellraiser_Japanese_P'
+STEM = 'Hellraiser_Revival_Japanese_P'
 
 
 def build_fonts(work, stem=STEM):
@@ -55,7 +56,7 @@ def build(*, preview=False):
     report = coverage({name:data['report'] for name,data in regions.items()})
     payloads = {}
     for region in REGIONS:
-        entries = [Entry(**{k:row[k] for k in ('namespace','namespace_hash','key','key_hash','source_hash')}, text=row['ja'])
+        entries = [Entry(**{k:row[k] for k in ('namespace','namespace_hash','key','key_hash','source_hash')}, text=runtime_text(row))
                    for row in regions[region.name]['rows'] if row['status'] != 'untranslated']
         if not entries:
             raise ValueError('ビルドする訳文がない領域があります')
@@ -84,7 +85,7 @@ def build(*, preview=False):
         if any((unpacked/relative).read_bytes() != payload for relative,payload in payloads.items()):
             raise ValueError('Pak読み戻し検査に失敗しました')
         files = {pak.name:pak.read_bytes(), **build_fonts(work)}
-    manifest = dict(schema_version=1, product='hellraiser-revival-demo-japanese', patch_version=version, preview=preview, game_version=catalog['game_version'], coverage=report,
+    manifest = dict(schema_version=1, product='hellraiser-revival-japanese', patch_version=version, preview=preview, game_version=catalog['game_version'], coverage=report,
                     files=[dict(name=name,sha256=hashlib.sha256(content).hexdigest()) for name,content in sorted(files.items())], supported_builds=read_json(ROOT/'catalog/supported-builds.json'))
     files['manifest.json'] = (json.dumps(manifest,ensure_ascii=False,indent=2)+'\n').encode()
     for name in ('Patch.ps1','Install.cmd','Uninstall.cmd'):
@@ -95,7 +96,7 @@ def build(*, preview=False):
     if preview:
         files['README.md'] = (f'# 表示確認用の試作版\n\n開発中の日本語訳{report["translated"]-report["untranslated"]:,}件を含みます。正式公開前の表示確認用です。\n\n'.encode() + files['README.md'])
     files['SHA256SUMS.txt'] = ''.join(f'{hashlib.sha256(data).hexdigest()}  {name}\n' for name,data in sorted(files.items())).encode('ascii')
-    output = destination/f'Hellraiser_Revival_Demo_Japanese_v{version}.zip'
+    output = destination/f'Hellraiser_Revival_Japanese_v{version}.zip'
     deterministic_zip(files, output)
     output.with_suffix('.sha256').write_text(f'{sha256(output)}  {output.name}\n',encoding='ascii')
     return output, report

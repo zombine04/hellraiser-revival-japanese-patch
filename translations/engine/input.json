@@ -1197,7 +1197,7 @@
       "source_hash": 961210850,
       "ja": "テンキー 0",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "InputKeys",

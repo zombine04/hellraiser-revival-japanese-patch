@@ -1,6 +1,6 @@
 [project]
 name = "hellraiser-japanese-patch"
-version = "1.0.1"
-description = "Hellraiser Revival Demo 日本語化パッチのビルドツール"
+version = "1.0.0"
+description = "Hellraiser Revival 製品版日本語化パッチのビルドツール"
 requires-python = ">=3.12"
 dependencies = []

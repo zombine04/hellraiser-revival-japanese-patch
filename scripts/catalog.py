@@ -30,7 +30,7 @@ def main():
     catalog = dict(schema_version=1, game_version=inventory['game_version'], entries=[metadata(e) for e in sorted(entries, key=lambda e:e.identity)])
     if args.compare:
         diff = compare(read_json(args.compare), catalog)
-        (ROOT/'.local/catalog-diff.json').write_text(json.dumps(diff, ensure_ascii=False, indent=2)+'\n', encoding='utf-8')
+        (ROOT/f'.local/catalog-diff-{args.region}.json').write_text(json.dumps(diff, ensure_ascii=False, indent=2)+'\n', encoding='utf-8')
         print('更新差分: ' + ', '.join(f'{k}={len(v)}' for k,v in diff.items()))
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(catalog, ensure_ascii=False, indent=2)+'\n', encoding='utf-8')

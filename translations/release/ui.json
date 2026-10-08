@@ -709,7 +709,7 @@
       "source_hash": 2971868136,
       "ja": "終了",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Common",
@@ -1209,7 +1209,7 @@
       "source_hash": 3236965722,
       "ja": "設定",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Common",
@@ -2041,7 +2041,7 @@
       "source_hash": 3303768111,
       "ja": "アクセシビリティ",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -2101,7 +2101,7 @@
       "source_hash": 3027966356,
       "ja": "照準アシスト",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -2111,7 +2111,7 @@
       "source_hash": 387737374,
       "ja": "照準操作",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -2151,7 +2151,7 @@
       "source_hash": 2849597742,
       "ja": "アンチエイリアス",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -2171,7 +2171,7 @@
       "source_hash": 2109760864,
       "ja": "音声",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -2181,7 +2181,7 @@
       "source_hash": 1600328805,
       "ja": "音声の調整",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -2211,7 +2211,7 @@
       "source_hash": 2026951171,
       "ja": "ボーダーレス",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -2245,11 +2245,11 @@
     },
     {
       "namespace": "ST_UI_Optionsvolume",
-      "namespace_hash": 755479877,
       "key": "hard_difficulty_description",
+      "namespace_hash": 755479877,
       "key_hash": 1888000474,
-      "source_hash": 1822801594,
-      "ja": "戦闘が手ごわく、セーブできる場所も限られます。オートセーブは無効です。",
+      "source_hash": 585998573,
+      "ja": "手ごわい戦闘に加え、セーブできる場所も限られます。<Highlight>オートセーブは無効になります。</>",
       "status": "reviewed",
       "display_checked": false
     },
@@ -2261,7 +2261,7 @@
       "source_hash": 3140348118,
       "ja": "日本語",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -2301,7 +2301,7 @@
       "source_hash": 993004874,
       "ja": "色覚補正",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -2311,7 +2311,7 @@
       "source_hash": 3705310589,
       "ja": "色覚補正の強さ",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -2331,7 +2331,7 @@
       "source_hash": 3736341720,
       "ja": "操作配置",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -2411,7 +2411,7 @@
       "source_hash": 818748456,
       "ja": "操作",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -2441,7 +2441,7 @@
       "source_hash": 1941688548,
       "ja": "しゃがむ",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -2461,7 +2461,7 @@
       "source_hash": 674116147,
       "ja": "カスタム",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -2502,7 +2502,7 @@
       "source_hash": 1628684911,
       "ja": "死亡時のヒント",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -2532,7 +2532,7 @@
       "source_hash": 940523119,
       "ja": "標準",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -2552,7 +2552,7 @@
       "source_hash": 2507670669,
       "ja": "会話の音量",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -2562,7 +2562,7 @@
       "source_hash": 1995840312,
       "ja": "難易度",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -2572,7 +2572,7 @@
       "source_hash": 164136911,
       "ja": "表示モード",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -2582,7 +2582,7 @@
       "source_hash": 1990454940,
       "ja": "画面設定",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -2612,7 +2612,7 @@
       "source_hash": 4002336577,
       "ja": "状況に応じて表示",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -2622,7 +2622,7 @@
       "source_hash": 467070793,
       "ja": "ダイナミックレンジ",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -2672,7 +2672,7 @@
       "source_hash": 2061566512,
       "ja": "最高",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -2796,11 +2796,11 @@
     },
     {
       "namespace": "ST_UI_Optionsvolume",
-      "namespace_hash": 755479877,
       "key": "hellraiser_difficulty_description",
+      "namespace_hash": 755479877,
       "key_hash": 3111217166,
-      "source_hash": 3951178923,
-      "ja": "敵が多く物資が乏しい、極めて過酷な戦闘が待ち受けます。セーブには数に限りのあるセーブトークンが必要です。ニューゲーム開始時のみ選択できます。",
+      "source_hash": 264370697,
+      "ja": "極めて難しい戦闘、多数の敵、乏しい物資。<Highlight>セーブには数の限られたセーブトークンが必要です。</>新しくゲームを始めるときだけ選択できます。",
       "status": "reviewed",
       "display_checked": false
     },
@@ -2863,7 +2863,7 @@
       "source_hash": 2002277234,
       "ja": "フレームレート上限",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -2903,7 +2903,7 @@
       "source_hash": 3952491563,
       "ja": "ゲーム設定",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -2913,7 +2913,7 @@
       "source_hash": 2423118793,
       "ja": "ゲームプレイ",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -2923,7 +2923,7 @@
       "source_hash": 43410284,
       "ja": "ガンマ補正",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -2933,7 +2933,7 @@
       "source_hash": 1394226821,
       "ja": "全体の品質",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -2943,7 +2943,7 @@
       "source_hash": 2788292163,
       "ja": "基本設定",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -2983,7 +2983,7 @@
       "source_hash": 1227968327,
       "ja": "グラフィック設定",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -2993,7 +2993,7 @@
       "source_hash": 3919124977,
       "ja": "HUD詳細設定",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -3013,7 +3013,7 @@
       "source_hash": 3183691299,
       "ja": "HUDの位置",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -3023,7 +3023,7 @@
       "source_hash": 2333533195,
       "ja": "HUDプリセット",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -3033,7 +3033,7 @@
       "source_hash": 4160014094,
       "ja": "HUD設定",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -3043,7 +3043,7 @@
       "source_hash": 2653606213,
       "ja": "HUDの文字サイズ",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -3163,7 +3163,7 @@
       "source_hash": 2260380961,
       "ja": "入力設定",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -3173,7 +3173,7 @@
       "source_hash": 236586221,
       "ja": "入力機器",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -3193,7 +3193,7 @@
       "source_hash": 1122805163,
       "ja": "アクション表示",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -3203,7 +3203,7 @@
       "source_hash": 2715508907,
       "ja": "インターフェース",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -3213,7 +3213,7 @@
       "source_hash": 3078913396,
       "ja": "操作音の音量",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -3253,7 +3253,7 @@
       "source_hash": 3068509691,
       "ja": "左右を反転",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -3273,7 +3273,7 @@
       "source_hash": 240769694,
       "ja": "上下を反転",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -3353,7 +3353,7 @@
       "source_hash": 283117022,
       "ja": "言語",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -3373,7 +3373,7 @@
       "source_hash": 3112130414,
       "ja": "ライセンス楽曲",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -3403,7 +3403,7 @@
       "source_hash": 192117882,
       "ja": "全体の音量",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -3493,7 +3493,7 @@
       "source_hash": 3677222838,
       "ja": "マウスとキーボード",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -3503,7 +3503,7 @@
       "source_hash": 1909249937,
       "ja": "マウス・キーボード設定",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -3523,7 +3523,7 @@
       "source_hash": 3360614701,
       "ja": "音楽の音量",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -3573,7 +3573,7 @@
       "source_hash": 980478179,
       "ja": "いいえ",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -3583,7 +3583,7 @@
       "source_hash": 926731589,
       "ja": "ノーマル",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -3603,7 +3603,7 @@
       "source_hash": 650834792,
       "ja": "オブジェクトの強調表示",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -3613,7 +3613,7 @@
       "source_hash": 837545741,
       "ja": "オフ",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -3623,7 +3623,7 @@
       "source_hash": 1315344152,
       "ja": "オン",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -3633,7 +3633,7 @@
       "source_hash": 2353565394,
       "ja": "チュートリアル表示",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -3643,7 +3643,7 @@
       "source_hash": 1502961165,
       "ja": "出力設定",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -3693,7 +3693,7 @@
       "source_hash": 4277063420,
       "ja": "再生デバイス",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -3703,7 +3703,7 @@
       "source_hash": 3875095640,
       "ja": "プレイヤー設定",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -3773,7 +3773,7 @@
       "source_hash": 1756043232,
       "ja": "クイックターン",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -3813,7 +3813,7 @@
       "source_hash": 1486462369,
       "ja": "解像度",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -3863,7 +3863,7 @@
       "source_hash": 2235590040,
       "ja": "照準時の左右感度",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -3883,7 +3883,7 @@
       "source_hash": 1039926013,
       "ja": "照準時の上下感度",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -3903,7 +3903,7 @@
       "source_hash": 2278376857,
       "ja": "左右の感度",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -3923,7 +3923,7 @@
       "source_hash": 1064379132,
       "ja": "上下の感度",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -3983,7 +3983,7 @@
       "source_hash": 1227472675,
       "ja": "射撃／攻撃",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -4053,7 +4053,7 @@
       "source_hash": 1409079436,
       "ja": "効果音の音量",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -4093,7 +4093,7 @@
       "source_hash": 3328748862,
       "ja": "スピーカー",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -4113,7 +4113,7 @@
       "source_hash": 201760648,
       "ja": "スピーカー構成",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -4123,7 +4123,7 @@
       "source_hash": 2712401945,
       "ja": "ダッシュ",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -4133,7 +4133,7 @@
       "source_hash": 3740604560,
       "ja": "ダッシュ操作",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -4183,7 +4183,7 @@
       "source_hash": 2295636158,
       "ja": "字幕",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -4193,7 +4193,7 @@
       "source_hash": 2293447026,
       "ja": "字幕の背景",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -4203,7 +4203,7 @@
       "source_hash": 1828025503,
       "ja": "字幕背景の不透明度",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -4213,7 +4213,7 @@
       "source_hash": 796373304,
       "ja": "字幕設定",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -4223,7 +4223,7 @@
       "source_hash": 887817435,
       "ja": "字幕の話者名",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -4233,7 +4233,7 @@
       "source_hash": 2209412020,
       "ja": "字幕の文字サイズ",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -4424,7 +4424,7 @@
       "source_hash": 3930595580,
       "ja": "垂直同期",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -4504,7 +4504,7 @@
       "source_hash": 1793626319,
       "ja": "映像",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -4524,7 +4524,7 @@
       "source_hash": 2021020947,
       "ja": "描画距離",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -4534,7 +4534,7 @@
       "source_hash": 1506646506,
       "ja": "映像の調整",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -4544,7 +4544,7 @@
       "source_hash": 3135528315,
       "ja": "音量設定",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -4564,7 +4564,7 @@
       "source_hash": 597364193,
       "ja": "背景内の文字の字幕",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Optionsvolume",
@@ -6429,7 +6429,7 @@
       "source_hash": 1150569474,
       "ja": "つづきから",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Unique",
@@ -6899,7 +6899,7 @@
       "source_hash": 3541357052,
       "ja": "ロード",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Unique",
@@ -7019,7 +7019,7 @@
       "source_hash": 829792470,
       "ja": "ニューゲーム",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Unique",
@@ -7174,11 +7174,11 @@
     },
     {
       "namespace": "ST_UI_Unique",
-      "namespace_hash": 3960165365,
       "key": "demo_end_footer_01",
+      "namespace_hash": 3960165365,
       "key_hash": 1971127648,
-      "source_hash": 1305612544,
-      "ja": "Steamで今すぐ予約購入",
+      "source_hash": 633182139,
+      "ja": "今すぐ購入",
       "status": "reviewed",
       "display_checked": false
     },
@@ -7220,7 +7220,7 @@
       "source_hash": 2305783633,
       "ja": "いずれかのキーを押して進む",
       "status": "reviewed",
-      "display_checked": true
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Unique",
@@ -10441,6 +10441,127 @@
       "key_hash": 978478427,
       "source_hash": 2582684910,
       "ja": "運任せで罠を抜けられる見込みは薄い。よく観察しよう。",
+      "status": "reviewed",
+      "display_checked": false
+    },
+    {
+      "namespace": "ST_UI_Options",
+      "key": "camerabob_description",
+      "namespace_hash": 1874050209,
+      "key_hash": 2980197675,
+      "source_hash": 1074755419,
+      "ja": "移動中にカメラが上下に揺れるかどうかを設定します。オフにすると、より快適にプレイできる場合があります。",
+      "status": "reviewed",
+      "display_checked": false
+    },
+    {
+      "namespace": "ST_UI_Options",
+      "key": "contrastmode_description",
+      "namespace_hash": 1874050209,
+      "key_hash": 1087068682,
+      "source_hash": 493208479,
+      "ja": "オンにすると暗い部分がさらに暗くなり、細部を見分けやすくなります。人によっては、頭痛のリスクを減らせる場合があります。",
+      "status": "reviewed",
+      "display_checked": false
+    },
+    {
+      "namespace": "ST_UI_Optionsvolume",
+      "key": "camerabob_title",
+      "namespace_hash": 755479877,
+      "key_hash": 213781846,
+      "source_hash": 367910205,
+      "ja": "移動時のカメラの揺れ",
+      "status": "reviewed",
+      "display_checked": false
+    },
+    {
+      "namespace": "ST_UI_Optionsvolume",
+      "key": "contrastmode_title",
+      "namespace_hash": 755479877,
+      "key_hash": 891320452,
+      "source_hash": 146865520,
+      "ja": "高コントラストモード",
+      "status": "reviewed",
+      "display_checked": false
+    },
+    {
+      "namespace": "ST_UI_Unique",
+      "key": "change_require_restart_warning_description",
+      "namespace_hash": 3960165365,
+      "key_hash": 2343464529,
+      "source_hash": 2788158203,
+      "ja": "変更はゲームの再起動後に反映されます。",
+      "status": "reviewed",
+      "display_checked": false
+    },
+    {
+      "namespace": "ST_UI_Unique",
+      "key": "demo_save_areyousure",
+      "namespace_hash": 3960165365,
+      "key_hash": 3966639853,
+      "source_hash": 1823543238,
+      "ja": "よろしいですか？",
+      "status": "reviewed",
+      "display_checked": false
+    },
+    {
+      "namespace": "ST_UI_Unique",
+      "key": "demo_save_datedetected",
+      "namespace_hash": 3960165365,
+      "key_hash": 273216827,
+      "source_hash": 3913085351,
+      "ja": "デモ版のセーブデータが見つかりました。引き継いで、デモ版の続きからプレイしますか？",
+      "status": "reviewed",
+      "display_checked": false
+    },
+    {
+      "namespace": "ST_UI_Unique",
+      "key": "demo_save_import",
+      "namespace_hash": 3960165365,
+      "key_hash": 2033425719,
+      "source_hash": 3236462330,
+      "ja": "引き継ぐ",
+      "status": "reviewed",
+      "display_checked": false
+    },
+    {
+      "namespace": "ST_UI_Unique",
+      "key": "demo_save_importdemosavedata",
+      "namespace_hash": 3960165365,
+      "key_hash": 2051734503,
+      "source_hash": 3822160892,
+      "ja": "デモ版のセーブデータを引き継ぐ",
+      "status": "reviewed",
+      "display_checked": false
+    },
+    {
+      "namespace": "ST_UI_Unique",
+      "key": "demo_save_note",
+      "namespace_hash": 3960165365,
+      "key_hash": 149348382,
+      "source_hash": 3991617997,
+      "ja": "注意：この選択肢が表示されるのは今回だけです。",
+      "status": "reviewed",
+      "display_checked": false
+    },
+    {
+      "namespace": "ST_UI_Unique",
+      "key": "ep01_LeviathanPuzzle_TwistSection",
+      "namespace_hash": 3960165365,
+      "key_hash": 371260894,
+      "source_hash": 3908352465,
+      "ja": "区画を回転",
+      "status": "needs_review",
+      "display_checked": false,
+      "review_note": "製品版の該当パズルで、回転させる対象を「区画」と呼ぶ表記が適切か確認する。"
+    },
+    {
+      "namespace": "ST_UI_Unique",
+      "key": "graphics_driver_warning_description",
+      "namespace_hash": 3960165365,
+      "key_hash": 245633161,
+      "source_hash": 1971173286,
+      "ja": "グラフィックボードのドライバーを最新版に更新してください。",
       "status": "reviewed",
       "display_checked": false
     }

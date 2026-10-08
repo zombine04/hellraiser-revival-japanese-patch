@@ -9,7 +9,7 @@ import tempfile
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
-NAMES = [f'Hellraiser_Japanese_P.{ext}' for ext in ('pak', 'utoc', 'ucas')]
+NAMES = [f'Hellraiser_Revival_Japanese_P.{ext}' for ext in ('pak', 'utoc', 'ucas')]
 ORIGINALS = ['global.utoc', 'global.ucas'] + [f'{stem}.{ext}' for stem in ('pakchunk0-Windows', 'pakchunk0optional-Windows') for ext in ('pak', 'utoc', 'ucas')]
 
 
@@ -23,22 +23,33 @@ class InstallerTests(unittest.TestCase):
         self.temp = tempfile.TemporaryDirectory(prefix='jp-installer-')
         self.addCleanup(self.temp.cleanup)
         self.base = Path(self.temp.name)
+        # 実ゲームの起動状態をテストから参照せず、子PowerShell内で固定する。
+        self.runner = self.base / 'fixture-runner.ps1'
+        self.runner.write_text("""param([string]$FixturePatch,[string]$Action,[string]$GameDir,
+    [switch]$NonInteractive,[switch]$AllowUnsupported,[switch]$FixtureGameRunning)
+function Get-Process {
+    param($Name,$ErrorAction)
+    if ($FixtureGameRunning) { [pscustomobject]@{ Id=1 } }
+}
+& $FixturePatch -Action $Action -GameDir $GameDir -NonInteractive:$NonInteractive -AllowUnsupported:$AllowUnsupported
+exit $LASTEXITCODE
+""", encoding='utf-8-sig')
         self.package = self.base / "配布 ZIP's folder"
         self.package.mkdir()
-        self.game = self.base / "ゲーム 空白's folder"
+        self.game = self.base / "Steam library/steamapps/common/ゲーム 空白's folder"
         self.paks = self.game / 'Hellraiser/Content/Paks'
         self.paks.mkdir(parents=True)
         self.exe = self.game/'Hellraiser/Binaries/Win64/Hellraiser-Win64-Shipping.exe'
         self.exe.parent.mkdir(parents=True)
         self.exe.write_bytes(b'self-made-executable-marker')
-        (self.game/'Version.txt').write_text('test-build\n', encoding='utf-8')
+        (self.game/'Version.txt').write_text('1.0.0_HellraiserGame_Shipping_Test\n', encoding='utf-8')
         for name in ORIGINALS:
             (self.paks / name).write_bytes(('自作の元データ:' + name).encode())
         for name in ('Patch.ps1', 'Install.cmd', 'Uninstall.cmd'):
             shutil.copyfile(ROOT / 'distribution' / name, self.package / name)
         for name in ('README.md', 'THIRD_PARTY_NOTICES.md', 'LICENSE'):
             (self.package / name).write_text('自作のテスト用説明', encoding='utf-8')
-        self.manifest = dict(schema_version=1, product='hellraiser-revival-demo-japanese', patch_version='1.0.0', files=[], supported_builds=[dict(version='test-build')])
+        self.manifest = dict(schema_version=1, product='hellraiser-revival-japanese', patch_version='1.0.0', files=[], supported_builds=[dict(version='1.0.0_HellraiserGame_Shipping_Test')])
         self.prepare('1.0.0')
         self.original_bytes = {n: (self.paks/n).read_bytes() for n in ORIGINALS}
 
@@ -54,17 +65,27 @@ class InstallerTests(unittest.TestCase):
         names = NAMES + ['Patch.ps1', 'Install.cmd', 'Uninstall.cmd', 'README.md', 'manifest.json', 'THIRD_PARTY_NOTICES.md', 'LICENSE']
         (self.package/'SHA256SUMS.txt').write_text(''.join(f'{digest(self.package/n)}  {n}\n' for n in sorted(names)), encoding='ascii')
 
-    def run_patch(self, action='Install', success=True, *, non_interactive=True, allow_unsupported=False, input=None):
-        command = ['powershell.exe','-NoLogo','-NoProfile','-ExecutionPolicy','Bypass','-File',str(self.package/'Patch.ps1'),'-Action',action,'-GameDir',str(self.game)]
+    def run_patch(self, action='Install', success=True, *, non_interactive=True, allow_unsupported=False, input=None, running=False):
+        command = ['powershell.exe','-NoLogo','-NoProfile','-ExecutionPolicy','Bypass','-File',str(self.runner),'-FixturePatch',str(self.package/'Patch.ps1'),'-Action',action,'-GameDir',str(self.game)]
         if non_interactive:
             command.append('-NonInteractive')
         if allow_unsupported:
             command.append('-AllowUnsupported')
+        if running:
+            command.append('-FixtureGameRunning')
         result = subprocess.run(command, input=input, capture_output=True, timeout=30)
         self.assertEqual(result.returncode == 0, success, result.stdout.decode('utf-8', errors='replace') + result.stderr.decode('utf-8', errors='replace'))
-        self.assertFalse((self.paks/'.hellraiser-japanese-patch.lock').exists())
+        self.assertFalse((self.paks/'.hellraiser-revival-japanese-patch.lock').exists())
         for n, data in self.original_bytes.items():
             self.assertEqual((self.paks/n).read_bytes(), data)
+
+    def test_running_game_prevents_install_and_uninstall(self):
+        self.run_patch(success=False, running=True)
+        self.assertFalse(any((self.paks/n).exists() for n in NAMES))
+        self.run_patch()
+        installed = {n: (self.paks/n).read_bytes() for n in NAMES}
+        self.run_patch('Uninstall', success=False, running=True)
+        self.assertEqual(installed, {n: (self.paks/n).read_bytes() for n in NAMES})
 
     def test_install_reinstall_update_remove(self):
         self.run_patch()
@@ -97,7 +118,7 @@ class InstallerTests(unittest.TestCase):
         self.assertFalse((self.paks/NAMES[0]).exists())
 
     def test_unsupported_game_requires_explicit_noninteractive_permission(self):
-        (self.game/'Version.txt').write_text('another-build', encoding='utf-8')
+        (self.game/'Version.txt').write_text('1.0.2_HellraiserGame_Shipping_Test', encoding='utf-8')
         self.run_patch(success=False)
         self.run_patch(allow_unsupported=True)
 
@@ -108,26 +129,54 @@ class InstallerTests(unittest.TestCase):
         self.run_patch()
 
     def test_unsupported_game_can_be_confirmed_interactively(self):
-        (self.game/'Version.txt').write_text('another-build', encoding='utf-8')
+        (self.game/'Version.txt').write_text('1.0.2_HellraiserGame_Shipping_Test', encoding='utf-8')
         self.run_patch(non_interactive=False, input=b'y\n')
 
     def test_unsupported_game_can_be_declined_interactively(self):
-        (self.game/'Version.txt').write_text('another-build', encoding='utf-8')
+        (self.game/'Version.txt').write_text('1.0.2_HellraiserGame_Shipping_Test', encoding='utf-8')
         self.run_patch(success=False, non_interactive=False, input=b'n\n')
 
-    def test_missing_version_requires_warning_permission(self):
+    def test_missing_version_requires_retail_manifest_and_warning_permission(self):
         (self.game/'Version.txt').unlink()
+        self.run_patch(success=False)
+        self.run_patch(success=False, allow_unsupported=True)
+        (self.game.parent.parent/'appmanifest_1551980.acf').write_text(
+            '"appid" "1551980" "installdir" "' + self.game.name + '"', encoding='utf-8')
         self.run_patch(success=False)
         self.run_patch(allow_unsupported=True)
 
     def test_probe_patch_conflict_is_rejected(self):
-        for stem in ('Hellraiser_Japanese_Probe_P', 'Hellraiser_Japanese_Font_P'):
+        for stem in ('Hellraiser_Japanese_P', 'Hellraiser_Japanese_Probe_P', 'Hellraiser_Japanese_Font_P', 'Hellraiser_Revival_Japanese_Probe_P'):
             with self.subTest(stem=stem):
                 trial=self.paks/(stem+'.pak')
                 trial.write_bytes(b'trial')
                 self.run_patch(success=False)
                 self.assertEqual(trial.read_bytes(),b'trial')
                 trial.unlink()
+
+    def test_demo_or_unidentifiable_game_is_rejected_even_when_forced(self):
+        for version in ('1.0.0_HellraiserGameDemo_Shipping_Test', 'UnknownOtherGame'):
+            with self.subTest(version=version):
+                (self.game/'Version.txt').write_text(version, encoding='utf-8')
+                self.run_patch(success=False, allow_unsupported=True)
+                self.assertFalse(any((self.paks/name).exists() for name in NAMES))
+
+    def test_demo_management_information_is_not_overwritten(self):
+        state = self.paks/'.hellraiser-japanese-patch.json'
+        state.write_text('{"product":"hellraiser-revival-demo-japanese"}', encoding='utf-8')
+        before = state.read_bytes()
+        self.run_patch(success=False)
+        self.assertEqual(state.read_bytes(), before)
+
+    def test_other_product_package_is_rejected(self):
+        self.manifest['product'] = 'hellraiser-revival-demo-japanese'
+        self.checksums()
+        self.run_patch(success=False)
+
+    def test_uninstall_does_not_require_current_version(self):
+        self.run_patch()
+        (self.game/'Version.txt').unlink()
+        self.run_patch('Uninstall')
 
     def test_manifest_traversal_is_rejected(self):
         self.manifest['files'][0]['name'] = '../unrelated.txt'

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "game_version": "1.0.0.225957_HellraiserGameDemo_Shipping_26254_Demo_Test",
+  "game_version": "1.0.1.227219_HellraiserGame_Shipping_27809_ReleasePatch1_Test",
   "entries": [
     {
       "namespace": "",
@@ -15754,6 +15754,17 @@
     {
       "namespace": "ST_UI_Options",
       "namespace_hash": 1874050209,
+      "key": "camerabob_description",
+      "key_hash": 2980197675,
+      "source_hash": 1074755419,
+      "source_text_sha256": "d7c56464a9c4650a1eaca76b9285b01d0c24d16c46f6fbf2a5e636a8264ba43a",
+      "placeholders": [],
+      "tags": [],
+      "newlines": 0
+    },
+    {
+      "namespace": "ST_UI_Options",
+      "namespace_hash": 1874050209,
       "key": "choose_difficulty_description_format",
       "key_hash": 1728527874,
       "source_hash": 4224431658,
@@ -15854,6 +15865,17 @@
       "key_hash": 3173278898,
       "source_hash": 2824359246,
       "source_text_sha256": "ab10d329649717fb84c0fe79a13c2eebf1d88cf5add5a6b1944816c5caec18ce",
+      "placeholders": [],
+      "tags": [],
+      "newlines": 0
+    },
+    {
+      "namespace": "ST_UI_Options",
+      "namespace_hash": 1874050209,
+      "key": "contrastmode_description",
+      "key_hash": 1087068682,
+      "source_hash": 493208479,
+      "source_text_sha256": "15072386a44bbccd143fd38635e22697de65621627f924024c2d7d827b0db5c6",
       "placeholders": [],
       "tags": [],
       "newlines": 0
@@ -17584,6 +17606,17 @@
     {
       "namespace": "ST_UI_Optionsvolume",
       "namespace_hash": 755479877,
+      "key": "camerabob_title",
+      "key_hash": 213781846,
+      "source_hash": 367910205,
+      "source_text_sha256": "e8c5145b0635080b185a01323baca67349608a4763ff7e6a762cb69fef2ccd21",
+      "placeholders": [],
+      "tags": [],
+      "newlines": 0
+    },
+    {
+      "namespace": "ST_UI_Optionsvolume",
+      "namespace_hash": 755479877,
       "key": "cinematic_volume_verb_imperative",
       "key_hash": 1519540468,
       "source_hash": 3227352000,
@@ -17632,6 +17665,17 @@
       "key_hash": 1419363195,
       "source_hash": 2925179574,
       "source_text_sha256": "a7754b6d12886809df853dbedee369c4b03cd4646703cdcaf6fc0056fcf3e542",
+      "placeholders": [],
+      "tags": [],
+      "newlines": 0
+    },
+    {
+      "namespace": "ST_UI_Optionsvolume",
+      "namespace_hash": 755479877,
+      "key": "contrastmode_title",
+      "key_hash": 891320452,
+      "source_hash": 146865520,
+      "source_text_sha256": "de3916c54122b46fb2772aee30e321c1750b06dda0f95a30e352bb646895d643",
       "placeholders": [],
       "tags": [],
       "newlines": 0
@@ -18389,10 +18433,13 @@
       "namespace_hash": 755479877,
       "key": "hard_difficulty_description",
       "key_hash": 1888000474,
-      "source_hash": 1822801594,
-      "source_text_sha256": "4170de62d576a5937eb7526737714bc014014f46c56bff56831276cc80b58432",
+      "source_hash": 585998573,
+      "source_text_sha256": "95981aa76e752375c88403c3ed4021466f993a72f152575b77c96bcb96ac14d1",
       "placeholders": [],
-      "tags": [],
+      "tags": [
+        "<Highlight>",
+        "</>"
+      ],
       "newlines": 0
     },
     {
@@ -18433,10 +18480,13 @@
       "namespace_hash": 755479877,
       "key": "hellraiser_difficulty_description",
       "key_hash": 3111217166,
-      "source_hash": 3951178923,
-      "source_text_sha256": "463ab733bbe34349008b1488ef3c193c20be965a6b8e846b9bba93c4e5c66d42",
+      "source_hash": 264370697,
+      "source_text_sha256": "9ab8ada82aa5be5f29d94b17bf6d6f1333ba11c8ab3bfa5f1eb655c60d678e87",
       "placeholders": [],
-      "tags": [],
+      "tags": [
+        "<Highlight>",
+        "</>"
+      ],
       "newlines": 0
     },
     {
@@ -20301,6 +20351,17 @@
     {
       "namespace": "ST_UI_Unique",
       "namespace_hash": 3960165365,
+      "key": "change_require_restart_warning_description",
+      "key_hash": 2343464529,
+      "source_hash": 2788158203,
+      "source_text_sha256": "ae546395edb6eb397668185bcf788f88ec54f96aa9e02f5a9c790e7330fc7015",
+      "placeholders": [],
+      "tags": [],
+      "newlines": 0
+    },
+    {
+      "namespace": "ST_UI_Unique",
+      "namespace_hash": 3960165365,
       "key": "collectable_notification_title",
       "key_hash": 2583069366,
       "source_hash": 1281041125,
@@ -20350,8 +20411,8 @@
       "namespace_hash": 3960165365,
       "key": "demo_end_footer_01",
       "key_hash": 1971127648,
-      "source_hash": 1305612544,
-      "source_text_sha256": "f063ecfe92412296c03ce656183dc195072251ac29c1afc48448bdef2867e3c7",
+      "source_hash": 633182139,
+      "source_text_sha256": "0967d879f30f98e17f839cb8d8c9e41249738158c11404e27a14b6712b4c2b2a",
       "placeholders": [],
       "tags": [],
       "newlines": 0
@@ -20393,6 +20454,61 @@
         "</>"
       ],
       "newlines": 1
+    },
+    {
+      "namespace": "ST_UI_Unique",
+      "namespace_hash": 3960165365,
+      "key": "demo_save_areyousure",
+      "key_hash": 3966639853,
+      "source_hash": 1823543238,
+      "source_text_sha256": "f0762c4f3bfcd695e32e7fcd087dc2a60bc26cda108b4fc0a643445b397168c7",
+      "placeholders": [],
+      "tags": [],
+      "newlines": 0
+    },
+    {
+      "namespace": "ST_UI_Unique",
+      "namespace_hash": 3960165365,
+      "key": "demo_save_datedetected",
+      "key_hash": 273216827,
+      "source_hash": 3913085351,
+      "source_text_sha256": "283271ff32b5b7379f8cb7cfbe32b34da59283ce699912ea29fc0c7008f28662",
+      "placeholders": [],
+      "tags": [],
+      "newlines": 0
+    },
+    {
+      "namespace": "ST_UI_Unique",
+      "namespace_hash": 3960165365,
+      "key": "demo_save_import",
+      "key_hash": 2033425719,
+      "source_hash": 3236462330,
+      "source_text_sha256": "2cff9baabf56ca002610e113bc94deb6ededddfc3c130365b6e88ed5195bf774",
+      "placeholders": [],
+      "tags": [],
+      "newlines": 0
+    },
+    {
+      "namespace": "ST_UI_Unique",
+      "namespace_hash": 3960165365,
+      "key": "demo_save_importdemosavedata",
+      "key_hash": 2051734503,
+      "source_hash": 3822160892,
+      "source_text_sha256": "aff83020ed7da84ea70a79e53c1a7a16e16edfb7643834d65774fb81cbb53a0c",
+      "placeholders": [],
+      "tags": [],
+      "newlines": 0
+    },
+    {
+      "namespace": "ST_UI_Unique",
+      "namespace_hash": 3960165365,
+      "key": "demo_save_note",
+      "key_hash": 149348382,
+      "source_hash": 3991617997,
+      "source_text_sha256": "3d7e12444601d69156a8accadfdad8d70e21c712919b1d001aca292ea7c79324",
+      "placeholders": [],
+      "tags": [],
+      "newlines": 0
     },
     {
       "namespace": "ST_UI_Unique",
@@ -20560,6 +20676,17 @@
       "key_hash": 1880496462,
       "source_hash": 2315905422,
       "source_text_sha256": "975482186117ebb3c40756746e309245f5f70d810134029dace0317e8cb301a9",
+      "placeholders": [],
+      "tags": [],
+      "newlines": 0
+    },
+    {
+      "namespace": "ST_UI_Unique",
+      "namespace_hash": 3960165365,
+      "key": "ep01_LeviathanPuzzle_TwistSection",
+      "key_hash": 371260894,
+      "source_hash": 3908352465,
+      "source_text_sha256": "e8b89afc656843d866882d55ea3afe54cd921e2384ff395053f5f3a4b7613cce",
       "placeholders": [],
       "tags": [],
       "newlines": 0
@@ -21088,6 +21215,17 @@
       "key_hash": 3037531489,
       "source_hash": 4219245349,
       "source_text_sha256": "6fb74fea3fb960c47ad75602d1dca2dcd02392e4936b5b6f71592ad18ebfedf8",
+      "placeholders": [],
+      "tags": [],
+      "newlines": 0
+    },
+    {
+      "namespace": "ST_UI_Unique",
+      "namespace_hash": 3960165365,
+      "key": "graphics_driver_warning_description",
+      "key_hash": 245633161,
+      "source_hash": 1971173286,
+      "source_text_sha256": "fd4b9a0a39049c99fde14ec1193f1e0c90353a96c474dca889581297c1924f58",
       "placeholders": [],
       "tags": [],
       "newlines": 0
@@ -34362,17 +34500,6 @@
     {
       "namespace": "ST_VO_Generic",
       "namespace_hash": 3039387753,
-      "key": "VX_Generic_CombatBarks_IdleToInvestigateHeardSolo_5dsc_Cultist03",
-      "key_hash": 818492198,
-      "source_hash": 2281319894,
-      "source_text_sha256": "4f0c9259b74eac3ddd6d6b2378cbd0a7c77de599d611201e30156594810f3ba1",
-      "placeholders": [],
-      "tags": [],
-      "newlines": 0
-    },
-    {
-      "namespace": "ST_VO_Generic",
-      "namespace_hash": 3039387753,
       "key": "VX_Generic_CombatBarks_IdleToInvestigateHeardSolo_6nFC_Cultist01",
       "key_hash": 3218070252,
       "source_hash": 572546503,
@@ -34476,17 +34603,6 @@
       "key_hash": 868162994,
       "source_hash": 134904402,
       "source_text_sha256": "973b87240ee03ac38932931144ed74810e9a2d7a1dca776209059e57a4c601be",
-      "placeholders": [],
-      "tags": [],
-      "newlines": 0
-    },
-    {
-      "namespace": "ST_VO_Generic",
-      "namespace_hash": 3039387753,
-      "key": "VX_Generic_CombatBarks_IdleToInvestigateHeardSolo_D5sJ_FCultist01",
-      "key_hash": 2489727353,
-      "source_hash": 2281319894,
-      "source_text_sha256": "4f0c9259b74eac3ddd6d6b2378cbd0a7c77de599d611201e30156594810f3ba1",
       "placeholders": [],
       "tags": [],
       "newlines": 0
@@ -34791,17 +34907,6 @@
     {
       "namespace": "ST_VO_Generic",
       "namespace_hash": 3039387753,
-      "key": "VX_Generic_CombatBarks_IdleToInvestigateHeardSolo_gykc_Cultist01",
-      "key_hash": 1776081013,
-      "source_hash": 2281319894,
-      "source_text_sha256": "4f0c9259b74eac3ddd6d6b2378cbd0a7c77de599d611201e30156594810f3ba1",
-      "placeholders": [],
-      "tags": [],
-      "newlines": 0
-    },
-    {
-      "namespace": "ST_VO_Generic",
-      "namespace_hash": 3039387753,
       "key": "VX_Generic_CombatBarks_IdleToInvestigateHeardSolo_hstm_Cultist01",
       "key_hash": 3679443547,
       "source_hash": 1099022240,
@@ -34850,17 +34955,6 @@
       "key_hash": 1700221399,
       "source_hash": 3158924275,
       "source_text_sha256": "f117bf3795f6ba03e45aca5dbc91d7d09b671b6f3bcfb8bacf7c0315fd4771f0",
-      "placeholders": [],
-      "tags": [],
-      "newlines": 0
-    },
-    {
-      "namespace": "ST_VO_Generic",
-      "namespace_hash": 3039387753,
-      "key": "VX_Generic_CombatBarks_IdleToInvestigateHeardSolo_pYau_Cultist02",
-      "key_hash": 3264835710,
-      "source_hash": 2281319894,
-      "source_text_sha256": "4f0c9259b74eac3ddd6d6b2378cbd0a7c77de599d611201e30156594810f3ba1",
       "placeholders": [],
       "tags": [],
       "newlines": 0
@@ -34960,28 +35054,6 @@
       "key_hash": 2079429183,
       "source_hash": 2503313222,
       "source_text_sha256": "f57aee93b51814c8b5e8f3a82e2746f46d03a8deec7b18a77eb4a646715f938a",
-      "placeholders": [],
-      "tags": [],
-      "newlines": 0
-    },
-    {
-      "namespace": "ST_VO_Generic",
-      "namespace_hash": 3039387753,
-      "key": "VX_Generic_CombatBarks_IdleToInvestigateHeardSolo_v4Fx_FCultist02",
-      "key_hash": 1187755960,
-      "source_hash": 2281319894,
-      "source_text_sha256": "4f0c9259b74eac3ddd6d6b2378cbd0a7c77de599d611201e30156594810f3ba1",
-      "placeholders": [],
-      "tags": [],
-      "newlines": 0
-    },
-    {
-      "namespace": "ST_VO_Generic",
-      "namespace_hash": 3039387753,
-      "key": "VX_Generic_CombatBarks_IdleToInvestigateHeardSolo_vGwA_FCultist03",
-      "key_hash": 1502292646,
-      "source_hash": 2281319894,
-      "source_text_sha256": "4f0c9259b74eac3ddd6d6b2378cbd0a7c77de599d611201e30156594810f3ba1",
       "placeholders": [],
       "tags": [],
       "newlines": 0

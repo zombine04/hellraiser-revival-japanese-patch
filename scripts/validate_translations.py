@@ -16,8 +16,8 @@ def main():
     except (ValueError, KeyError, TypeError):
         print('翻訳データの構造・書式検査に失敗しました。原文は表示しません。',file=sys.stderr)
         return 1
-    print('試作: '+str(probe))
-    print('正式版: '+str(formal))
+    print('初期試作の補助訳: '+str(probe))
+    print('翻訳データ: '+str(formal))
     return 0
 
 
