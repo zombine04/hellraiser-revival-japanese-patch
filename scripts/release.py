@@ -20,7 +20,10 @@ def main():
     check(package,release=True)
     if checksum.read_text('ascii')!=f'{sha256(package)}  {package.name}\n':
         raise ValueError('ZIPのチェックサムが一致しません')
-    print(publish(GitHub(os.environ['GITHUB_REPOSITORY']),'v'+version,os.environ['GITHUB_SHA'],[package,checksum]))
+    notes=ROOT/'docs/releases'/f'v{version}.md'
+    if not notes.is_file() or not notes.read_text('utf-8').strip():
+        raise ValueError('確認済みの日本語リリースノートが必要です')
+    print(publish(GitHub(os.environ['GITHUB_REPOSITORY'],notes_file=notes),'v'+version,os.environ['GITHUB_SHA'],[package,checksum]))
 
 
 if __name__=='__main__':

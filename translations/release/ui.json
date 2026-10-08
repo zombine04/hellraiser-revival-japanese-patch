@@ -10550,10 +10550,9 @@
       "namespace_hash": 3960165365,
       "key_hash": 371260894,
       "source_hash": 3908352465,
-      "ja": "区画を回転",
-      "status": "needs_review",
-      "display_checked": false,
-      "review_note": "製品版の該当パズルで、回転させる対象を「区画」と呼ぶ表記が適切か確認する。"
+      "ja": "パーツを回転",
+      "status": "reviewed",
+      "display_checked": false
     },
     {
       "namespace": "ST_UI_Unique",
