@@ -6,8 +6,8 @@
 
 - 対応版: `1.0.1.227219_HellraiserGame_Shipping_27809_ReleasePatch1_Test`
 - ZIP: `Hellraiser_Revival_Japanese_v1.0.0.zip`
-- サイズ: 738,923 bytes
-- SHA-256: `881edb57e1eae83b54128f0dc8bc4c1a1027dfc49504d05213838adb19ad6316`
+- サイズ: 738,999 bytes
+- SHA-256: `7918ad323656a2d4cbdd09bca679ffa9846a820a80b1fa07dc404a1dd2bd5ce8`
 - 対象: Game 6,846件とEngine入力表示164件、計7,010件
 - 文章・書式レビュー済み7,010件、要確認・未訳・欠落0件
 - 表示言語: ゲーム内で「日本語」を選択。同梱NotoSansJPを参照

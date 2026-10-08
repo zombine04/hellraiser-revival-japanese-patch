@@ -10,7 +10,7 @@ Clive Barker's Hellraiser: RevivalのWindows／Steam製品版向け非公式日�
 - 翻訳対象: Game 6,846件とEngineの入力表示164件、計7,010件
 - ゲーム同梱のNotoSansJPを使用。フォント本体は配布物に含みません
 
-デモ版から原文・識別情報・書式が一致する訳文を引き継ぎ、製品版の追加・変更分を翻訳しています。ユーザーがメニューとプレイした範囲の翻訳表示・内容を確認しています。全編の通しプレイ、全分岐、全解像度での確認は未完了です。詳細は[確認記録](docs/release-candidate.md)を参照してください。
+デモ版から原文・識別情報・書式が一致する訳文を引き継ぎ、製品版の追加・変更分を翻訳しています。ユーザーがメニューとプレイした範囲の翻訳表示・内容を確認しています。全編の通しプレイ、全分岐、全解像度での確認は未完了です。詳細は[確認記録](https://github.com/zombine04/hellraiser-revival-japanese-patch/blob/develop/docs/release-candidate.md)を参照してください。
 
 ## 導入
 
