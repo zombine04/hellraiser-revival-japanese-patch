@@ -100,7 +100,7 @@ def build(*, preview=False):
     for name in ('Patch.ps1','Install.cmd','Uninstall.cmd'):
         raw = (ROOT/'distribution'/name).read_text('utf-8-sig').replace('\r\n','\n')
         files[name] = raw.replace('\n','\r\n').encode('utf-8-sig' if name.endswith('.ps1') else 'ascii')
-    for name in ('README.md','THIRD_PARTY_NOTICES.md','LICENSE'):
+    for name in ('README.md','LICENSE'):
         files[name] = (ROOT/name).read_text('utf-8-sig').replace('\r\n','\n').encode()
     if preview:
         files['README.md'] = (f'# 表示確認用の試作版\n\n開発中の日本語訳{report["translated"]-report["untranslated"]:,}件を含みます。正式公開前の表示確認用です。\n\n'.encode() + files['README.md'])
