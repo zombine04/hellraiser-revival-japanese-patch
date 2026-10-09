@@ -1,5 +1,6 @@
 # 作業規約
 
+- 特に指定がなければ、作業対象は製品版リポジトリ `hellraiser-revival-japanese-patch` とする。デモ版は明示された場合のみ対象とし、作業前にGitHub CLIで対象リポジトリ名を確認する。
 - 開発は `develop`、公開は `main`。mainへの統合・リポジトリ公開はユーザーの最終承認後に限る。
 - 作業前にGitHub CLIでIssueを起票し、最新のdevelopから `codex/issue-番号-概要` を作成する。
 - 作業と検証後、develop宛てに日本語のPRを作成し、本文に `Closes #番号` を記載する。
