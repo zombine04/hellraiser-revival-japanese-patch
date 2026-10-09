@@ -134,7 +134,9 @@ function Assert-Package {
     Assert-NoLink $PSScriptRoot
     $checksumPath = Join-Path $PSScriptRoot 'SHA256SUMS.txt'
     if (!(Test-Path -LiteralPath $checksumPath -PathType Leaf)) { Fail 'チェックサム一覧がありません。配布ZIP全体を展開してください。' }
+    $packageInfo = Read-Json (Join-Path $PSScriptRoot 'manifest.json')
     $expected = @($managedNames) + @('Patch.ps1','Install.cmd','Uninstall.cmd','README.md','manifest.json','THIRD_PARTY_NOTICES.md','LICENSE')
+    if ($packageInfo.schema_version -eq 2) { $expected += @('GeneratePatch.exe','RUNTIME_LICENSES.txt','ui-patch.json') }
     $seen = @{}
     foreach ($line in [IO.File]::ReadAllLines($checksumPath)) {
         if ($line -cnotmatch '^([0-9a-f]{64})  ([A-Za-z0-9_.-]+)$') { Fail 'チェックサム一覧の形式が不正です。' }
@@ -149,6 +151,8 @@ function Assert-Package {
 }
 $lock = $null
 $lockPath = $null
+$workDir = $null
+$preserveWork = $false
 try {
     Assert-GameStopped
     if (!$GameDir) { $GameDir = Find-Game }
@@ -190,7 +194,7 @@ try {
             if (Test-Path -LiteralPath (Join-Path $pakDir '.hellraiser-japanese-patch.json')) { Fail 'デモ版用パッチの管理情報が残っています。導入元の手順で削除してください。' }
             Assert-Package
             $manifest = Read-Json (Join-Path $PSScriptRoot 'manifest.json')
-            if ($manifest.schema_version -ne 1 -or $manifest.product -cne $product -or $manifest.patch_version -cnotmatch '^\d+\.\d+\.\d+(?:-[a-z0-9.]+)?$') { Fail '配布物の対応情報が不正です。' }
+            if ($manifest.schema_version -notin @(1,2) -or $manifest.product -cne $product -or $manifest.patch_version -cnotmatch '^\d+\.\d+\.\d+(?:-[a-z0-9.]+)?$') { Fail '配布物の対応情報が不正です。' }
             Assert-FileList $manifest.files
             $supportedVersions = @(Get-SupportedVersions $manifest.supported_builds)
             foreach ($file in $manifest.files) {
@@ -204,35 +208,96 @@ try {
                 catch { $installedVersion = '' }
             }
             Assert-RetailGame $GameDir $installedVersion
+            if ($manifest.schema_version -eq 2 -and $installedVersion -cnotin $supportedVersions) {
+                Fail 'このゲーム版は統合パッチ生成に対応していません。対応版用のパッチを使用してください。'
+            }
             if ($installedVersion -cnotin $supportedVersions) { Confirm-Unsupported $installedVersion $supportedVersions }
+        }
+        $installSource = $PSScriptRoot
+        $probeNames = @('Hellraiser_Revival_EnglishProbe_P.pak','Hellraiser_Revival_EnglishProbe_P.utoc','Hellraiser_Revival_EnglishProbe_P.ucas')
+        $migrateProbe = @()
+        $installedFiles = @()
+        if ($Action -eq 'Install') {
+            $installedFiles = @($manifest.files)
+            $present = @($probeNames | Where-Object { Test-Path -LiteralPath (Join-Path $pakDir $_) })
+            if ($present.Count) {
+                if ($manifest.schema_version -ne 2 -or $present.Count -ne 3 -or @($manifest.legacy_probe_files).Count -ne 3) { Fail '英語表示の試作ファイルが不完全です。試作の復元手順を確認してください。' }
+                $seenProbe = @{}
+                foreach ($file in $manifest.legacy_probe_files) {
+                    if ($file.name -cnotin $probeNames -or $seenProbe.ContainsKey([string]$file.name) -or $file.sha256 -cnotmatch '^[0-9a-f]{64}$') { Fail '試作の移行情報が不正です。' }
+                    $trial = Join-Path $pakDir $file.name
+                    Assert-NoLink $trial
+                    if (!(Test-Path -LiteralPath $trial -PathType Leaf) -or (Hash $trial) -cne $file.sha256) { Fail '未知または変更済みの試作があります。上書き・削除せず中止します。' }
+                    $seenProbe[[string]$file.name] = $true
+                }
+                $migrateProbe = $probeNames
+            }
+        }
+        $privateRoot = Join-Path $GameDir '.local\hellraiser-japanese-patch'
+        Assert-NoLink $privateRoot
+        $workDir = Join-Path $privateRoot ([Guid]::NewGuid().ToString('N'))
+        [IO.Directory]::CreateDirectory($workDir) | Out-Null
+        $backupDir = Join-Path $workDir 'backup'
+        [IO.Directory]::CreateDirectory($backupDir) | Out-Null
+        if ($Action -eq 'Install' -and $manifest.schema_version -eq 2) {
+            Assert-FileList $manifest.generated_files
+            foreach ($originalName in @('pakchunk0-Windows.utoc','pakchunk0-Windows.ucas')) { Assert-NoLink (Join-Path $pakDir $originalName) }
+            $installSource = Join-Path $workDir 'generated'
+            [IO.Directory]::CreateDirectory($installSource) | Out-Null
+            Write-Output 'ニュース・日時を含む統合パッチを生成しています。'
+            & (Join-Path $PSScriptRoot 'GeneratePatch.exe') $PSScriptRoot $pakDir $installSource
+            if ($LASTEXITCODE -ne 0) { Fail '統合パッチを生成できませんでした。ゲーム版や原本の変更を確認してください。導入済みパッチは変更していません。' }
+            [IO.File]::Copy((Join-Path $PSScriptRoot $managedNames[0]),(Join-Path $installSource $managedNames[0]))
+            $installedFiles = @($manifest.generated_files)
+            foreach ($file in $installedFiles) {
+                if ((Hash (Join-Path $installSource $file.name)) -cne $file.sha256) { Fail '生成したファイルの整合性検査に失敗しました。' }
+            }
         }
         Assert-GameStopped
         $backup = @{}
-        foreach ($name in @($managedNames) + @($stateName)) {
+        $backupHashes = @{}
+        foreach ($name in @($managedNames) + @($stateName) + @($migrateProbe)) {
             $path = Join-Path $pakDir $name
-            if (Test-Path -LiteralPath $path -PathType Leaf) { $backup[$name] = [IO.File]::ReadAllBytes($path) }
+            if (Test-Path -LiteralPath $path -PathType Leaf) {
+                $backup[$name] = [IO.File]::ReadAllBytes($path)
+                $backupHashes[$name] = Hash $path
+                [IO.File]::WriteAllBytes((Join-Path $backupDir $name),$backup[$name])
+            }
         }
         $changed = @()
         try {
             foreach ($name in $managedNames) {
                 $path = Join-Path $pakDir $name
                 $changed += $name
-                if ($Action -eq 'Install') { [IO.File]::WriteAllBytes($path,[IO.File]::ReadAllBytes((Join-Path $PSScriptRoot $name))) }
+                if ($Action -eq 'Install') { [IO.File]::WriteAllBytes($path,[IO.File]::ReadAllBytes((Join-Path $installSource $name))) }
                 else { [IO.File]::Delete($path) }
+            }
+            foreach ($name in $migrateProbe) {
+                $changed += $name
+                [IO.File]::Delete((Join-Path $pakDir $name))
             }
             $changed += $stateName
             if ($Action -eq 'Install') {
-                $state = @{schema_version=1; product=$product; patch_version=$manifest.patch_version; files=@($manifest.files)}
+                $state = @{schema_version=1; product=$product; patch_version=$manifest.patch_version; files=@($installedFiles)}
                 [IO.File]::WriteAllText($statePath,($state | ConvertTo-Json -Depth 8),$utf8)
-                foreach ($file in $manifest.files) {
+                foreach ($file in $installedFiles) {
                     if ((Hash (Join-Path $pakDir $file.name)) -cne $file.sha256) { Fail 'コピー後の整合性検査に失敗しました。' }
                 }
             } else { [IO.File]::Delete($statePath) }
         } catch {
+            $restoreFailed = $false
+            [array]::Reverse($changed)
             foreach ($name in $changed) {
                 $path = Join-Path $pakDir $name
-                if ($backup.ContainsKey($name)) { [IO.File]::WriteAllBytes($path,$backup[$name]) }
-                elseif (Test-Path -LiteralPath $path -PathType Leaf) { [IO.File]::Delete($path) }
+                try {
+                    if ($backup.ContainsKey($name)) {
+                        if (!(Test-Path -LiteralPath $path -PathType Leaf) -or (Hash $path) -cne $backupHashes[$name]) { [IO.File]::WriteAllBytes($path,$backup[$name]) }
+                    } elseif (Test-Path -LiteralPath $path -PathType Leaf) { [IO.File]::Delete($path) }
+                } catch { $restoreFailed = $true }
+            }
+            if ($restoreFailed) {
+                $preserveWork = $true
+                Fail '復元の一部に失敗しました。ゲームを起動せず、ゲームフォルダー内の.local/hellraiser-japanese-patchに保存した退避データで復旧してください。'
             }
             Fail '処理に失敗したため、処理前の状態に戻しました。'
         }
@@ -244,5 +309,17 @@ try {
     else { [Console]::Error.WriteLine('処理を中止しました。ファイル形式、空き容量、書き込み権限を確認してください。') }
     exit 1
 } finally {
+    if ($null -ne $workDir -and !$preserveWork) {
+        # 作成した作業領域の既知ファイルだけを削除する。未知ファイルは削除しない。
+        foreach ($sub in @('generated','backup')) {
+            $folder = Join-Path $workDir $sub
+            foreach ($name in @($managedNames) + @($stateName) + @('Hellraiser_Revival_EnglishProbe_P.pak','Hellraiser_Revival_EnglishProbe_P.utoc','Hellraiser_Revival_EnglishProbe_P.ucas')) {
+                $path = Join-Path $folder $name
+                if (Test-Path -LiteralPath $path -PathType Leaf) { try { [IO.File]::Delete($path) } catch {} }
+            }
+            if (Test-Path -LiteralPath $folder -PathType Container) { try { [IO.Directory]::Delete($folder,$false) } catch {} }
+        }
+        try { [IO.Directory]::Delete($workDir,$false) } catch {}
+    }
     if ($null -ne $lock) { $lock.Dispose(); [IO.File]::Delete($lockPath) }
 }

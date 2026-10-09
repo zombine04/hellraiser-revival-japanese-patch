@@ -12,6 +12,7 @@ from .catalog import read_json
 from .fonts import ASSETS, write_assets
 from .locres import Entry, dumps, loads
 from .runtime_text import runtime_text
+from .runtime import runtime_files, read_recipe
 from .tools import ROOT, repak, retoc, sha256
 from .translation_set import load_regions
 from .regions import GAME, REGIONS, coverage
@@ -85,8 +86,16 @@ def build(*, preview=False):
         if any((unpacked/relative).read_bytes() != payload for relative,payload in payloads.items()):
             raise ValueError('Pak読み戻し検査に失敗しました')
         files = {pak.name:pak.read_bytes(), **build_fonts(work)}
-    manifest = dict(schema_version=1, product='hellraiser-revival-japanese', patch_version=version, preview=preview, game_version=catalog['game_version'], coverage=report,
+    recipe_raw, recipe = read_recipe()
+    if hashlib.sha256(files[f'{STEM}.ucas']).hexdigest() != recipe['seed_sha256']:
+        raise ValueError('フォント設定が変更手順の基準と一致しません')
+    manifest = dict(schema_version=2, product='hellraiser-revival-japanese', patch_version=version, preview=preview, game_version=catalog['game_version'], coverage=report,
                     files=[dict(name=name,sha256=hashlib.sha256(content).hexdigest()) for name,content in sorted(files.items())], supported_builds=read_json(ROOT/'catalog/supported-builds.json'))
+    manifest['legacy_probe_files'] = read_json(ROOT/'catalog/ui-probe-hashes.json')
+    manifest['generated_files'] = [dict(name=o['name'],sha256=o['sha256']) for o in recipe['outputs']]
+    manifest['generated_files'].append(next(f for f in manifest['files'] if f['name'].endswith('.pak')))
+    files.update(runtime_files())
+    files['ui-patch.json'] = recipe_raw
     files['manifest.json'] = (json.dumps(manifest,ensure_ascii=False,indent=2)+'\n').encode()
     for name in ('Patch.ps1','Install.cmd','Uninstall.cmd'):
         raw = (ROOT/'distribution'/name).read_text('utf-8-sig').replace('\r\n','\n')
