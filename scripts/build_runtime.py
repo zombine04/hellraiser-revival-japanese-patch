@@ -15,7 +15,8 @@ def build(cargo='cargo'):
     output=ROOT/'.local/runtime';output.mkdir(parents=True,exist_ok=True)
     env=os.environ | {'CARGO_TARGET_DIR':str(ROOT/'.local/runtime-target'), 'CARGO_INCREMENTAL':'0'}
     env.pop('RUSTFLAGS',None)
-    env['CARGO_ENCODED_RUSTFLAGS']='\x1f'.join(['--remap-path-prefix='+str(ROOT)+'=/source','-C','link-arg=/Brepro'])
+    cargo_home=Path(env.get('CARGO_HOME',Path.home()/'.cargo')).resolve()
+    env['CARGO_ENCODED_RUSTFLAGS']='\x1f'.join(['--remap-path-prefix='+str(Path.home())+'=/user','--remap-path-prefix='+str(ROOT)+'=/source','--remap-path-prefix='+str(cargo_home)+'=/cargo','-C','link-arg=/Brepro'])
     def run(*args):
         result=subprocess.run([cargo,*args],cwd=ROOT/'runtime',env=env,capture_output=True)
         with (output/'build.log').open('ab') as log:log.write(result.stdout+result.stderr)
