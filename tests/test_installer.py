@@ -47,7 +47,7 @@ exit $LASTEXITCODE
             (self.paks / name).write_bytes(('自作の元データ:' + name).encode())
         for name in ('Patch.ps1', 'Install.cmd', 'Uninstall.cmd'):
             shutil.copyfile(ROOT / 'distribution' / name, self.package / name)
-        for name in ('README.md', 'THIRD_PARTY_NOTICES.md', 'LICENSE'):
+        for name in ('README.md', 'LICENSE'):
             (self.package / name).write_text('自作のテスト用説明', encoding='utf-8')
         self.manifest = dict(schema_version=1, product='hellraiser-revival-japanese', patch_version='1.0.0', files=[], supported_builds=[dict(version='1.0.0_HellraiserGame_Shipping_Test')])
         self.prepare('1.0.0')
@@ -62,7 +62,7 @@ exit $LASTEXITCODE
 
     def checksums(self):
         (self.package/'manifest.json').write_text(json.dumps(self.manifest), encoding='utf-8')
-        names = NAMES + ['Patch.ps1', 'Install.cmd', 'Uninstall.cmd', 'README.md', 'manifest.json', 'THIRD_PARTY_NOTICES.md', 'LICENSE']
+        names = NAMES + ['Patch.ps1', 'Install.cmd', 'Uninstall.cmd', 'README.md', 'manifest.json', 'LICENSE']
         if self.manifest['schema_version']==2:names+=['GeneratePatch.exe','RUNTIME_LICENSES.txt','ui-patch.json']
         (self.package/'SHA256SUMS.txt').write_text(''.join(f'{digest(self.package/n)}  {n}\n' for n in sorted(names)), encoding='ascii')
 

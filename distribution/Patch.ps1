@@ -135,7 +135,7 @@ function Assert-Package {
     $checksumPath = Join-Path $PSScriptRoot 'SHA256SUMS.txt'
     if (!(Test-Path -LiteralPath $checksumPath -PathType Leaf)) { Fail 'チェックサム一覧がありません。配布ZIP全体を展開してください。' }
     $packageInfo = Read-Json (Join-Path $PSScriptRoot 'manifest.json')
-    $expected = @($managedNames) + @('Patch.ps1','Install.cmd','Uninstall.cmd','README.md','manifest.json','THIRD_PARTY_NOTICES.md','LICENSE')
+    $expected = @($managedNames) + @('Patch.ps1','Install.cmd','Uninstall.cmd','README.md','manifest.json','LICENSE')
     if ($packageInfo.schema_version -eq 2) { $expected += @('GeneratePatch.exe','RUNTIME_LICENSES.txt','ui-patch.json') }
     $seen = @{}
     foreach ($line in [IO.File]::ReadAllLines($checksumPath)) {
