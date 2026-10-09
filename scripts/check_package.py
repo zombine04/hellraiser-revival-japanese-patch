@@ -13,13 +13,14 @@ from jp_patch.build import STEM, build_fonts
 from jp_patch.locres import loads
 from jp_patch.runtime_text import runtime_text
 from jp_patch.tools import ROOT, repak
+from jp_patch.runtime import runtime_files, read_recipe
 from jp_patch.translation_set import load_regions
 from jp_patch.regions import REGIONS, coverage
 
 
 def check(path, *, release=False):
     binary_names={f'{STEM}.{extension}' for extension in ('pak','utoc','ucas')}
-    names=binary_names | {'Patch.ps1','Install.cmd','Uninstall.cmd','README.md','THIRD_PARTY_NOTICES.md','LICENSE','manifest.json','SHA256SUMS.txt'}
+    names=binary_names | {'Patch.ps1','Install.cmd','Uninstall.cmd','README.md','THIRD_PARTY_NOTICES.md','LICENSE','manifest.json','SHA256SUMS.txt','GeneratePatch.exe','RUNTIME_LICENSES.txt','ui-patch.json'}
     with zipfile.ZipFile(path) as archive:
         if len(archive.namelist()) != len(names) or set(archive.namelist()) != names:
             raise ValueError('ZIPの収録物が許可一覧と一致しません')
@@ -30,6 +31,19 @@ def check(path, *, release=False):
     if files['SHA256SUMS.txt'] != expected.encode():
         raise ValueError('チェックサム一覧が一致しません')
     manifest=json.loads(files['manifest.json'])
+    if manifest.get('schema_version') != 2:
+        raise ValueError('導入時生成に対応した配布形式ではありません')
+    raw_recipe,recipe=read_recipe()
+    if files['ui-patch.json'] != raw_recipe:
+        raise ValueError('変更手順が公開データと一致しません')
+    for name,data in runtime_files().items():
+        if files[name] != data:raise ValueError('生成ツールがビルド済み成果物と一致しません')
+    expected_generated=[dict(name=o['name'],sha256=o['sha256']) for o in recipe['outputs']]
+    expected_generated.append(next(f for f in manifest['files'] if f['name'].endswith('.pak')))
+    if manifest.get('generated_files') != expected_generated:
+        raise ValueError('生成後のハッシュが変更手順と一致しません')
+    if manifest.get('legacy_probe_files') != json.loads((ROOT/'catalog/ui-probe-hashes.json').read_text(encoding='utf-8')):
+        raise ValueError('試作の移行情報が一致しません')
     if manifest['product'] != 'hellraiser-revival-japanese':
         raise ValueError('製品版用の配布物ではありません')
     if release and (manifest['preview'] or manifest['patch_version'] != (ROOT/'VERSION').read_text().strip()):

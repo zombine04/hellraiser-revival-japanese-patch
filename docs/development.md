@@ -1,6 +1,6 @@
 # 開発手順
 
-Python 3.12とGit、GitHub CLIを使用します。ゲーム原本を必要とする抽出はローカルのみで行い、公開データからの検査・ビルドはゲームを持たない環境でも再現できる構成にします。
+Python 3.12とGit、GitHub CLIを使用します。配布用生成ツールはWindows上のRust 1.90.0とMSVCでビルドします。ゲーム原本を必要とする抽出はローカルのみで行い、公開データからの検査・ビルドはゲームを持たない環境でも再現できる構成にします。
 
 ## ブランチとIssue
 
@@ -16,6 +16,7 @@ Python 3.12とGit、GitHub CLIを使用します。ゲーム原本を必要と�
 
 ```powershell
 py -3.12 scripts/check_public.py --staged
+py -3.12 scripts/build_runtime.py
 py -3.12 -m unittest discover -s tests
 ```
 

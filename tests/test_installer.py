@@ -63,6 +63,7 @@ exit $LASTEXITCODE
     def checksums(self):
         (self.package/'manifest.json').write_text(json.dumps(self.manifest), encoding='utf-8')
         names = NAMES + ['Patch.ps1', 'Install.cmd', 'Uninstall.cmd', 'README.md', 'manifest.json', 'THIRD_PARTY_NOTICES.md', 'LICENSE']
+        if self.manifest['schema_version']==2:names+=['GeneratePatch.exe','RUNTIME_LICENSES.txt','ui-patch.json']
         (self.package/'SHA256SUMS.txt').write_text(''.join(f'{digest(self.package/n)}  {n}\n' for n in sorted(names)), encoding='ascii')
 
     def run_patch(self, action='Install', success=True, *, non_interactive=True, allow_unsupported=False, input=None, running=False):
@@ -78,6 +79,100 @@ exit $LASTEXITCODE
         self.assertFalse((self.paks/'.hellraiser-revival-japanese-patch.lock').exists())
         for n, data in self.original_bytes.items():
             self.assertEqual((self.paks/n).read_bytes(), data)
+
+    def enable_generation(self):
+        helper=ROOT/'.local/runtime/GeneratePatch.exe'
+        self.assertTrue(helper.is_file(),'先にscripts/build_runtime.pyを実行してください')
+        shutil.copyfile(helper,self.package/'GeneratePatch.exe')
+        (self.package/'RUNTIME_LICENSES.txt').write_text('自作試験の説明',encoding='utf-8')
+        raw=(self.paks/'pakchunk0-Windows.ucas').read_bytes()
+        block=dict(offset=0,compressed_size=len(raw),size=len(raw),sha256=hashlib.sha256(raw).hexdigest(),decoded_sha256=hashlib.sha256(raw).hexdigest(),compression='none')
+        outputs=[];self.generated={NAMES[0]:(self.package/NAMES[0]).read_bytes()}
+        for n in NAMES[1:]:
+            literal=('生成結果:'+self.manifest['patch_version']+n).encode()
+            expected=literal+raw
+            self.generated[n]=expected
+            outputs.append(dict(name=n,size=len(expected),sha256=hashlib.sha256(expected).hexdigest(),ops=[dict(data=literal.hex()),dict(copy=[1,0,len(raw)])]))
+        self.recipe=dict(schema_version=1,toc_sha256=digest(self.paks/'pakchunk0-Windows.utoc'),seed_sha256=digest(self.package/NAMES[2]),blocks=[block]*3,outputs=outputs)
+        (self.package/'ui-patch.json').write_text(json.dumps(self.recipe),encoding='utf-8')
+        self.manifest['schema_version']=2
+        self.manifest['generated_files']=[dict(name=n,sha256=hashlib.sha256(data).hexdigest()) for n,data in self.generated.items()]
+        self.manifest['legacy_probe_files']=[]
+        self.checksums()
+
+    def test_generated_install_update_and_remove_without_sources(self):
+        self.run_patch() # v1の管理情報から更新
+        self.prepare('1.1.0');self.enable_generation();self.run_patch()
+        self.assertEqual({n:(self.paks/n).read_bytes() for n in NAMES},self.generated)
+        self.run_patch() # 再導入
+        self.prepare('1.1.1');self.enable_generation();self.run_patch()
+        self.assertEqual({n:(self.paks/n).read_bytes() for n in NAMES},self.generated)
+        (self.game/'Version.txt').unlink()
+        for name in ('GeneratePatch.exe','ui-patch.json','manifest.json'):(self.package/name).unlink()
+        (self.paks/'pakchunk0-Windows.utoc').write_bytes(b'game updated')
+        self.original_bytes['pakchunk0-Windows.utoc']=b'game updated'
+        self.run_patch('Uninstall')
+        self.assertFalse(any((self.paks/n).exists() for n in NAMES))
+
+    def test_generated_wrong_source_or_output_preserves_old_install(self):
+        self.run_patch();before={p.name:p.read_bytes() for p in self.paks.iterdir() if p.is_file()}
+        self.enable_generation()
+        for field in ('toc_sha256','decoded_sha256','output'):
+            recipe=json.loads((self.package/'ui-patch.json').read_text())
+            bad=json.loads(json.dumps(recipe))
+            if field=='toc_sha256':bad[field]='0'*64
+            elif field=='decoded_sha256':bad['blocks'][0][field]='0'*64
+            else:bad['outputs'][0]['sha256']='0'*64
+            (self.package/'ui-patch.json').write_text(json.dumps(bad));self.checksums()
+            self.run_patch(success=False)
+            self.assertEqual(before,{p.name:p.read_bytes() for p in self.paks.iterdir() if p.is_file()})
+            (self.package/'ui-patch.json').write_text(json.dumps(recipe))
+
+    def test_generation_rejects_unsupported_even_when_forced(self):
+        self.enable_generation()
+        (self.game/'Version.txt').write_text('1.0.2_HellraiserGame_Shipping_Test')
+        self.run_patch(success=False,allow_unsupported=True)
+        self.assertFalse(any((self.paks/n).exists() for n in NAMES))
+
+    def prepare_known_probe(self):
+        self.probe={f'Hellraiser_Revival_EnglishProbe_P.{ext}':('自作試作'+ext).encode() for ext in ('pak','utoc','ucas')}
+        for n,b in self.probe.items():(self.paks/n).write_bytes(b)
+        self.manifest['legacy_probe_files']=[dict(name=n,sha256=hashlib.sha256(b).hexdigest()) for n,b in self.probe.items()]
+        self.checksums()
+
+    def test_known_probe_migration(self):
+        self.enable_generation();self.prepare_known_probe();self.run_patch()
+        self.assertFalse(any((self.paks/n).exists() for n in self.probe))
+        self.assertEqual({n:(self.paks/n).read_bytes() for n in NAMES},self.generated)
+        self.run_patch('Uninstall')
+
+    def test_unknown_or_partial_probe_is_preserved(self):
+        self.enable_generation();self.prepare_known_probe()
+        name=next(iter(self.probe));(self.paks/name).write_bytes(b'unknown')
+        self.run_patch(success=False)
+        self.assertEqual((self.paks/name).read_bytes(),b'unknown')
+        (self.paks/name).unlink();self.run_patch(success=False)
+        self.assertFalse(any((self.paks/n).exists() for n in NAMES))
+
+    def test_migration_rolls_back_after_state_write_failure(self):
+        self.run_patch();self.enable_generation();self.prepare_known_probe()
+        before={p.name:p.read_bytes() for p in self.paks.iterdir() if p.is_file()}
+        state=self.paks/'.hellraiser-revival-japanese-patch.json';state.chmod(0o444)
+        try:self.run_patch(success=False)
+        finally:state.chmod(0o666)
+        self.assertEqual(before,{p.name:p.read_bytes() for p in self.paks.iterdir() if p.is_file()})
+
+    def test_generation_bounds_and_changed_compressed_input(self):
+        self.enable_generation();good=json.loads(json.dumps(self.recipe))
+        variants=[]
+        bad=json.loads(json.dumps(good));bad['blocks'][0]['sha256']='0'*64;variants.append(bad)
+        bad=json.loads(json.dumps(good));bad['blocks'][0]['offset']=2**63;variants.append(bad)
+        bad=json.loads(json.dumps(good));bad['outputs'][0]['ops']=[dict(copy=[1,0,2**40])];variants.append(bad)
+        bad=json.loads(json.dumps(good));bad['outputs'][0]['name']='../unrelated.txt';variants.append(bad)
+        for recipe in variants:
+            (self.package/'ui-patch.json').write_text(json.dumps(recipe));self.checksums()
+            self.run_patch(success=False)
+            self.assertFalse(any((self.paks/n).exists() for n in NAMES))
 
     def test_running_game_prevents_install_and_uninstall(self):
         self.run_patch(success=False, running=True)

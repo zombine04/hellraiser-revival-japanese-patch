@@ -33,3 +33,7 @@ repakが使用するOodleライブラリはローカル解析専用です。ゲ�
 - https://dev.epicgames.com/documentation/en-us/unreal-engine/asset-localization-in-unreal-engine?application_version=5.6
 
 ゲーム本体・名称・原作の権利は各権利者に帰属します。本リポジトリのライセンスはゲーム原本への権利を付与するものではありません。
+
+## 導入時の生成ツール
+
+`GeneratePatch.exe` は本リポジトリのRustソースからビルドします。oozextract 0.5.5（MIT）で対象の圧縮データを展開し、OodleのプロプライエタリDLLは使用・同梱しません。serde、serde_json、sha2などを含む固定済み依存関係と著作権・ライセンス表記は、同梱の `RUNTIME_LICENSES.txt` を参照してください。既存の `LICENSE` は変更せず同梱します。
