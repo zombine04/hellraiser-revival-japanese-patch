@@ -1,31 +1,21 @@
 {
-  "schema_version": 1,
-  "toc_sha256": "bea72a88c29eb7b5a5e0eeca9e262c178fa9d28729af9ba1c002e85796ebc193",
+  "schema_version": 2,
   "seed_sha256": "1e2f4e231feb74cd6c1686abeda46a74cb53c93865309cf2355902cae0209582",
-  "blocks": [
+  "chunks": [
     {
-      "offset": 1600150400,
-      "compressed_size": 13484,
+      "chunk_id": "4bef52f7eaa984b300000001",
       "size": 65089,
-      "sha256": "41ceabfb3255d18213c7fedd8503eec30389ede8f21ae3dc78c18dd49235d520",
-      "decoded_sha256": "156106697924787288bf61bebac95ad9d3d06dbbe15d8b8f04f85c6f802564ec",
-      "compression": "oodle"
+      "sha256": "156106697924787288bf61bebac95ad9d3d06dbbe15d8b8f04f85c6f802564ec"
     },
     {
-      "offset": 1723776080,
-      "compressed_size": 11064,
+      "chunk_id": "e05611f0f28e6a9e00000001",
       "size": 52025,
-      "sha256": "bd4574f16fb7278b4b5162bbbac7a87ce96c6463913f5caeba6e430db1042065",
-      "decoded_sha256": "2bb1e4a3891c8be32e81f638178988a93613fcde3fc77261aca604644cedd28d",
-      "compression": "oodle"
+      "sha256": "2bb1e4a3891c8be32e81f638178988a93613fcde3fc77261aca604644cedd28d"
     },
     {
-      "offset": 1723787152,
-      "compressed_size": 8332,
+      "chunk_id": "81a308f01714a7e500000001",
       "size": 32752,
-      "sha256": "c4c0dc49c70a4fb482f10c5d849dde5fd33a677abdb0bb7cc71035d36e6d6fd3",
-      "decoded_sha256": "38e504ab6312509d523a17d32d168dccb72f861b301f1890c8be99344e8dfb65",
-      "compression": "oodle"
+      "sha256": "38e504ab6312509d523a17d32d168dccb72f861b301f1890c8be99344e8dfb65"
     }
   ],
   "outputs": [

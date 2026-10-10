@@ -24,12 +24,15 @@ def runtime_files():
 
 def read_recipe():
     raw=(ROOT/'distribution/ui-patch.json').read_bytes();recipe=json.loads(raw)
-    if set(recipe)!={'schema_version','toc_sha256','seed_sha256','blocks','outputs'} or recipe['schema_version']!=1 or len(recipe['blocks'])!=3:raise ValueError('変更手順の形式が不正です')
-    hashes=[recipe['toc_sha256'],recipe['seed_sha256']]
-    for block in recipe['blocks']:
-        if set(block)!={'offset','compressed_size','size','sha256','decoded_sha256','compression'} or block['compression']!='oodle':raise ValueError('対象範囲の情報が不正です')
-        if not 0<block['compressed_size']<=1_000_000 or not 0<block['size']<=1_000_000 or block['offset']<0:raise ValueError('対象範囲が不正です')
-        hashes.extend([block['sha256'],block['decoded_sha256']])
+    if set(recipe)!={'schema_version','seed_sha256','chunks','outputs'} or recipe['schema_version']!=2 or len(recipe['chunks'])!=3:raise ValueError('変更手順の形式が不正です')
+    hashes=[recipe['seed_sha256']];seen=set()
+    for chunk in recipe['chunks']:
+        if set(chunk)!={'chunk_id','size','sha256'}:raise ValueError('対象資産の情報が不正です')
+        chunk_id=chunk['chunk_id']
+        if len(chunk_id)!=24 or any(c not in '0123456789abcdef' for c in chunk_id) or chunk_id in seen:raise ValueError('資産IDが不正です')
+        seen.add(chunk_id)
+        if not 0<chunk['size']<=1_000_000:raise ValueError('対象資産のサイズが不正です')
+        hashes.append(chunk['sha256'])
     if [o['name'] for o in recipe['outputs']]!=['Hellraiser_Revival_Japanese_P.utoc','Hellraiser_Revival_Japanese_P.ucas']:raise ValueError('生成先が不正です')
     literal_bytes=0
     for output in recipe['outputs']:
@@ -39,7 +42,7 @@ def read_recipe():
             if set(op)=={'copy'}:
                 source,offset,count=op['copy']
                 if source not in range(4) or offset<0 or count<=0:raise ValueError('コピー範囲が不正です')
-                if source and offset+count>recipe['blocks'][source-1]['size']:raise ValueError('コピー範囲が不正です')
+                if source and offset+count>recipe['chunks'][source-1]['size']:raise ValueError('コピー範囲が不正です')
                 length+=count
             elif set(op)=={'data'}:
                 data=bytes.fromhex(op['data']);literal_bytes+=len(data);length+=len(data)

@@ -4,6 +4,7 @@ import json
 import os
 from pathlib import Path
 import shutil
+import struct
 import subprocess
 import tempfile
 import unittest
@@ -11,6 +12,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 NAMES = [f'Hellraiser_Revival_Japanese_P.{ext}' for ext in ('pak', 'utoc', 'ucas')]
 ORIGINALS = ['global.utoc', 'global.ucas'] + [f'{stem}.{ext}' for stem in ('pakchunk0-Windows', 'pakchunk0optional-Windows') for ext in ('pak', 'utoc', 'ucas')]
+CHUNK_IDS = [i.to_bytes(12, 'little').hex() for i in (1, 2, 3)]
 
 
 def digest(path):
@@ -79,21 +81,66 @@ exit $LASTEXITCODE
         self.assertFalse((self.paks/'.hellraiser-revival-japanese-patch.lock').exists())
         for n, data in self.original_bytes.items():
             self.assertEqual((self.paks/n).read_bytes(), data)
+        return result
+
+    def write_ui_container(self, *, payloads=None, stem='pakchunk0-Windows', padding=0,
+                           block_size=32, prefix=0, oodle=False, partitioned=False):
+        """独立した自作IoStore。資産とブロックの境界・位置を変えて配置する。"""
+        if payloads is None:
+            payloads = list(zip(CHUNK_IDS, self.ui_sources)) + [('ff'*12, b'unrelated data')]
+        ids = bytearray(); offsets = bytearray(); blocks = bytearray(); cas = bytearray(b'x'*padding)
+        block_count = 0
+        for cid, raw in payloads:
+            ids.extend(bytes.fromhex(cid))
+            offsets.extend((block_count*block_size+prefix).to_bytes(5, 'big'))
+            offsets.extend(len(raw).to_bytes(5, 'big'))
+            raw = b'p'*prefix+raw
+            for i in range(0, len(raw), block_size):
+                piece = raw[i:i+block_size]
+                compressed = b'\xcc\x06'+piece if oodle else piece
+                position = len(cas) + (4096 if partitioned else 0)
+                blocks.extend(position.to_bytes(5, 'little'))
+                blocks.extend(len(compressed).to_bytes(3, 'little'))
+                blocks.extend(len(piece).to_bytes(3, 'little'))
+                blocks.append(int(oodle))
+                cas.extend(compressed);cas.extend(b'gap')
+                block_count += 1
+        header = bytearray(144);header[:16] = b'-==--==--==--==-';header[16] = 8
+        for at, value in ((20,144),(24,len(payloads)),(28,block_count),(32,12),(36,int(oodle)),
+                          (40,32),(44,block_size),(52,2 if partitioned else 1),(84,1),(96,1)):
+            struct.pack_into('<I', header, at, value)
+        struct.pack_into('<Q', header, 88, 4096 if partitioned else 2**64-1)
+        methods = b'Oodle'+b'\0'*27 if oodle else b''
+        # 索引末尾の無関係なディレクトリ・メタデータも生成条件に含めない。
+        toc = bytes(header+ids+offsets+b'\0'*8+blocks+methods+b'unrelated index metadata')
+        files = {stem+'.utoc':toc, stem+('_s1' if partitioned else '')+'.ucas':bytes(cas)}
+        for name, data in files.items():
+            (self.paks/name).write_bytes(data)
+            self.original_bytes[name] = data
+
+    def assert_basic_install(self):
+        self.assertEqual({n:(self.paks/n).read_bytes() for n in NAMES},
+                         {n:(self.package/n).read_bytes() for n in NAMES})
+        state = json.loads((self.paks/'.hellraiser-revival-japanese-patch.json').read_text())
+        self.assertFalse(state['ui_patch_applied'])
+        self.assertEqual(state['files'], self.manifest['files'])
 
     def enable_generation(self):
         helper=ROOT/'.local/runtime/GeneratePatch.exe'
         self.assertTrue(helper.is_file(),'先にscripts/build_runtime.pyを実行してください')
         shutil.copyfile(helper,self.package/'GeneratePatch.exe')
         (self.package/'RUNTIME_LICENSES.txt').write_text('自作試験の説明',encoding='utf-8')
-        raw=(self.paks/'pakchunk0-Windows.ucas').read_bytes()
-        block=dict(offset=0,compressed_size=len(raw),size=len(raw),sha256=hashlib.sha256(raw).hexdigest(),decoded_sha256=hashlib.sha256(raw).hexdigest(),compression='none')
+        self.ui_sources = [('自作のUI資産'+str(i)).encode() for i in range(3)]
+        self.write_ui_container()
+        self.write_ui_container(stem='pakchunk0optional-Windows', payloads=[])
         outputs=[];self.generated={NAMES[0]:(self.package/NAMES[0]).read_bytes()}
         for n in NAMES[1:]:
             literal=('生成結果:'+self.manifest['patch_version']+n).encode()
-            expected=literal+raw
+            expected=literal+self.ui_sources[0]
             self.generated[n]=expected
-            outputs.append(dict(name=n,size=len(expected),sha256=hashlib.sha256(expected).hexdigest(),ops=[dict(data=literal.hex()),dict(copy=[1,0,len(raw)])]))
-        self.recipe=dict(schema_version=1,toc_sha256=digest(self.paks/'pakchunk0-Windows.utoc'),seed_sha256=digest(self.package/NAMES[2]),blocks=[block]*3,outputs=outputs)
+            outputs.append(dict(name=n,size=len(expected),sha256=hashlib.sha256(expected).hexdigest(),ops=[dict(data=literal.hex()),dict(copy=[1,0,len(self.ui_sources[0])])]))
+        chunks=[dict(chunk_id=cid,size=len(raw),sha256=hashlib.sha256(raw).hexdigest()) for cid,raw in zip(CHUNK_IDS,self.ui_sources)]
+        self.recipe=dict(schema_version=2,seed_sha256=digest(self.package/NAMES[2]),chunks=chunks,outputs=outputs)
         (self.package/'ui-patch.json').write_text(json.dumps(self.recipe),encoding='utf-8')
         self.manifest['schema_version']=2
         self.manifest['generated_files']=[dict(name=n,sha256=hashlib.sha256(data).hexdigest()) for n,data in self.generated.items()]
@@ -115,13 +162,12 @@ exit $LASTEXITCODE
         self.assertFalse(any((self.paks/n).exists() for n in NAMES))
 
     def test_generated_wrong_source_or_output_preserves_old_install(self):
-        self.run_patch();before={p.name:p.read_bytes() for p in self.paks.iterdir() if p.is_file()}
-        self.enable_generation()
-        for field in ('toc_sha256','decoded_sha256','output'):
+        self.run_patch();self.enable_generation()
+        before={p.name:p.read_bytes() for p in self.paks.iterdir() if p.is_file()}
+        for field in ('seed_sha256','output'):
             recipe=json.loads((self.package/'ui-patch.json').read_text())
             bad=json.loads(json.dumps(recipe))
-            if field=='toc_sha256':bad[field]='0'*64
-            elif field=='decoded_sha256':bad['blocks'][0][field]='0'*64
+            if field=='seed_sha256':bad[field]='0'*64
             else:bad['outputs'][0]['sha256']='0'*64
             (self.package/'ui-patch.json').write_text(json.dumps(bad));self.checksums()
             self.run_patch(success=False)
@@ -152,21 +198,108 @@ exit $LASTEXITCODE
         self.run_patch()
         self.assertEqual({n:(self.paks/n).read_bytes() for n in NAMES},self.generated)
 
-    def test_generated_changed_data_preserves_old_install_on_different_version(self):
+    def test_generated_updated_ui_installs_basic_and_can_restore_ui_later(self):
         self.enable_generation();self.run_patch()
         self.prepare('1.1.1');self.enable_generation()
         (self.game/'Version.txt').write_text('1.0.2_HellraiserGame_Shipping_Test', encoding='utf-8')
-        for name in ('pakchunk0-Windows.utoc', 'pakchunk0-Windows.ucas'):
-            with self.subTest(name=name):
-                source = self.paks/name
-                original = source.read_bytes()
-                changed = bytes([original[0] ^ 1]) + original[1:]
-                source.write_bytes(changed);self.original_bytes[name] = changed
-                before = {p.name:p.read_bytes() for p in self.paks.iterdir() if p.is_file()}
-                for forced in (False, True):
-                    self.run_patch(success=False, allow_unsupported=forced)
-                    self.assertEqual(before, {p.name:p.read_bytes() for p in self.paks.iterdir() if p.is_file()})
-                source.write_bytes(original);self.original_bytes[name] = original
+        for i in range(3):
+            with self.subTest(chunk=i):
+                payloads = list(zip(CHUNK_IDS, self.ui_sources))
+                raw = self.ui_sources[i]
+                payloads[i] = (CHUNK_IDS[i], bytes([raw[0]^1])+raw[1:])
+                self.write_ui_container(payloads=payloads)
+                self.run_patch();self.assert_basic_install()
+                self.run_patch();self.assert_basic_install()
+                self.write_ui_container();self.run_patch()
+                self.assertEqual({n:(self.paks/n).read_bytes() for n in NAMES},self.generated)
+        self.write_ui_container(payloads=[])
+        self.run_patch();self.assert_basic_install()
+        self.run_patch('Uninstall')
+        self.assertFalse(any((self.paks/n).exists() for n in NAMES))
+
+    def test_generated_new_install_with_updated_ui_reports_basic_success(self):
+        self.enable_generation()
+        self.write_ui_container(payloads=[(cid,b'updated UI') for cid in CHUNK_IDS])
+        result=self.run_patch(non_interactive=False,input=b'n\n')
+        self.assert_basic_install()
+        self.assertIn('ニュース・日時の変更を見送ります。',result.stdout.decode('utf-8'))
+
+    def test_generated_accepts_relocated_reordered_recompressed_chunks(self):
+        self.enable_generation()
+        payloads = [('ee'*12,b'new unrelated asset')]+list(reversed(list(zip(CHUNK_IDS,self.ui_sources))))
+        self.write_ui_container(payloads=payloads,padding=129,block_size=16,prefix=7,oodle=True,partitioned=True)
+        self.run_patch()
+        self.assertEqual({n:(self.paks/n).read_bytes() for n in NAMES},self.generated)
+
+    def test_generated_locates_assets_in_other_game_container(self):
+        self.enable_generation()
+        self.write_ui_container(stem='pakchunk0optional-Windows')
+        self.write_ui_container(payloads=[])
+        self.run_patch()
+        self.assertEqual({n:(self.paks/n).read_bytes() for n in NAMES},self.generated)
+
+    def test_generated_unsupported_compression_and_encryption_use_basic(self):
+        self.enable_generation()
+        self.write_ui_container(oodle=True)
+        source=self.paks/'pakchunk0-Windows.utoc'
+        raw=source.read_bytes().replace(b'Oodle\0',b'Other\0')
+        source.write_bytes(raw);self.original_bytes[source.name]=raw
+        self.run_patch();self.assert_basic_install()
+        self.write_ui_container()
+        raw=bytearray(source.read_bytes());raw[80]=2
+        source.write_bytes(raw);self.original_bytes[source.name]=bytes(raw)
+        self.run_patch();self.assert_basic_install()
+
+    def test_generated_missing_duplicate_and_unknown_format_use_basic(self):
+        self.enable_generation()
+        self.write_ui_container(payloads=[])
+        self.run_patch();self.assert_basic_install()
+        self.write_ui_container()
+        self.write_ui_container(stem='pakchunk1-Windows',payloads=[(CHUNK_IDS[0],self.ui_sources[0])])
+        self.run_patch();self.assert_basic_install()
+        self.write_ui_container(stem='pakchunk1-Windows',payloads=[])
+        source=self.paks/'pakchunk0-Windows.utoc';raw=bytearray(source.read_bytes());raw[16]=255
+        source.write_bytes(raw);self.original_bytes[source.name]=bytes(raw)
+        self.run_patch();self.assert_basic_install()
+
+    def test_basic_fallback_removes_known_probe_and_rolls_back_on_write_failure(self):
+        self.enable_generation();self.run_patch();self.prepare_known_probe()
+        self.write_ui_container(payloads=[])
+        before={p.name:p.read_bytes() for p in self.paks.iterdir() if p.is_file()}
+        state=self.paks/'.hellraiser-revival-japanese-patch.json';state.chmod(0o444)
+        try:self.run_patch(success=False)
+        finally:state.chmod(0o666)
+        self.assertEqual(before,{p.name:p.read_bytes() for p in self.paks.iterdir() if p.is_file()})
+        self.run_patch();self.assert_basic_install()
+        self.assertFalse(any((self.paks/n).exists() for n in self.probe))
+
+    def test_malformed_index_or_truncated_data_preserves_old_install(self):
+        self.enable_generation();self.run_patch()
+        for name in ('pakchunk0-Windows.utoc','pakchunk0-Windows.ucas'):
+            self.write_ui_container()
+            source=self.paks/name;source.write_bytes(b'bad');self.original_bytes[name]=b'bad'
+            before={p.name:p.read_bytes() for p in self.paks.iterdir() if p.is_file()}
+            self.run_patch(success=False)
+            self.assertEqual(before,{p.name:p.read_bytes() for p in self.paks.iterdir() if p.is_file()})
+
+    def test_invalid_index_sizes_and_block_ranges_preserve_old_install(self):
+        self.enable_generation();self.run_patch()
+        for field,value in ((24,2**32-1),(28,2**32-1),(44,0),(88,0)):
+            self.write_ui_container()
+            source=self.paks/'pakchunk0-Windows.utoc';raw=bytearray(source.read_bytes())
+            struct.pack_into('<Q' if field==88 else '<I',raw,field,value)
+            source.write_bytes(raw);self.original_bytes[source.name]=bytes(raw)
+            before={p.name:p.read_bytes() for p in self.paks.iterdir() if p.is_file()}
+            self.run_patch(success=False)
+            self.assertEqual(before,{p.name:p.read_bytes() for p in self.paks.iterdir() if p.is_file()})
+        self.write_ui_container()
+        source=self.paks/'pakchunk0-Windows.utoc';raw=bytearray(source.read_bytes())
+        entries=struct.unpack_from('<I',raw,24)[0]
+        raw[144+entries*12:144+entries*12+5]=(2**40-1).to_bytes(5,'big')
+        source.write_bytes(raw);self.original_bytes[source.name]=bytes(raw)
+        before={p.name:p.read_bytes() for p in self.paks.iterdir() if p.is_file()}
+        self.run_patch(success=False)
+        self.assertEqual(before,{p.name:p.read_bytes() for p in self.paks.iterdir() if p.is_file()})
 
     def test_generated_missing_version_requires_only_retail_identification(self):
         self.enable_generation()
@@ -213,17 +346,20 @@ exit $LASTEXITCODE
         finally:state.chmod(0o666)
         self.assertEqual(before,{p.name:p.read_bytes() for p in self.paks.iterdir() if p.is_file()})
 
-    def test_generation_bounds_and_changed_compressed_input(self):
+    def test_generation_recipe_errors_do_not_fall_back(self):
         self.enable_generation();good=json.loads(json.dumps(self.recipe))
         variants=[]
-        bad=json.loads(json.dumps(good));bad['blocks'][0]['sha256']='0'*64;variants.append(bad)
-        bad=json.loads(json.dumps(good));bad['blocks'][0]['offset']=2**63;variants.append(bad)
+        bad=json.loads(json.dumps(good));bad['chunks'][0]['chunk_id']='../invalid';variants.append(bad)
+        bad=json.loads(json.dumps(good));bad['chunks'][0]['size']=2**63;variants.append(bad)
         bad=json.loads(json.dumps(good));bad['outputs'][0]['ops']=[dict(copy=[1,0,2**40])];variants.append(bad)
         bad=json.loads(json.dumps(good));bad['outputs'][0]['name']='../unrelated.txt';variants.append(bad)
         for recipe in variants:
             (self.package/'ui-patch.json').write_text(json.dumps(recipe));self.checksums()
             self.run_patch(success=False)
             self.assertFalse(any((self.paks/n).exists() for n in NAMES))
+        # UIが未対応でも、手順の形式不良を基本版への切り替えで隠さない。
+        self.write_ui_container(payloads=[])
+        self.run_patch(success=False)
 
     def test_running_game_prevents_install_and_uninstall(self):
         self.run_patch(success=False, running=True)
