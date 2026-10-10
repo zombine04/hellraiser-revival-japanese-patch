@@ -153,6 +153,7 @@ $lock = $null
 $lockPath = $null
 $workDir = $null
 $preserveWork = $false
+$uiPatchApplied = $false
 try {
     Assert-GameStopped
     if (!$GameDir) { $GameDir = Find-Game }
@@ -196,7 +197,6 @@ try {
             $manifest = Read-Json (Join-Path $PSScriptRoot 'manifest.json')
             if ($manifest.schema_version -notin @(1,2) -or $manifest.product -cne $product -or $manifest.patch_version -cnotmatch '^\d+\.\d+\.\d+(?:-[a-z0-9.]+)?$') { Fail '配布物の対応情報が不正です。' }
             Assert-FileList $manifest.files
-            $supportedVersions = @(Get-SupportedVersions $manifest.supported_builds)
             foreach ($file in $manifest.files) {
                 if ((Hash (Join-Path $PSScriptRoot $file.name)) -cne $file.sha256) { Fail 'パッチのハッシュが対応情報と一致しません。' }
             }
@@ -208,10 +208,12 @@ try {
                 catch { $installedVersion = '' }
             }
             Assert-RetailGame $GameDir $installedVersion
-            if ($manifest.schema_version -eq 2 -and $installedVersion -cnotin $supportedVersions) {
-                Fail 'このゲーム版は統合パッチ生成に対応していません。対応版用のパッチを使用してください。'
+            # 統合版は生成時の入力・出力ハッシュで判定し、版名の違いでは止めない。
+            # 原本検証を持たない旧配布形式だけは従来の警告と確認を残す。
+            if ($manifest.schema_version -eq 1) {
+                $supportedVersions = @(Get-SupportedVersions $manifest.supported_builds)
+                if ($installedVersion -cnotin $supportedVersions) { Confirm-Unsupported $installedVersion $supportedVersions }
             }
-            if ($installedVersion -cnotin $supportedVersions) { Confirm-Unsupported $installedVersion $supportedVersions }
         }
         $installSource = $PSScriptRoot
         $probeNames = @('Hellraiser_Revival_EnglishProbe_P.pak','Hellraiser_Revival_EnglishProbe_P.utoc','Hellraiser_Revival_EnglishProbe_P.ucas')
@@ -241,16 +243,23 @@ try {
         [IO.Directory]::CreateDirectory($backupDir) | Out-Null
         if ($Action -eq 'Install' -and $manifest.schema_version -eq 2) {
             Assert-FileList $manifest.generated_files
-            foreach ($originalName in @('pakchunk0-Windows.utoc','pakchunk0-Windows.ucas')) { Assert-NoLink (Join-Path $pakDir $originalName) }
-            $installSource = Join-Path $workDir 'generated'
-            [IO.Directory]::CreateDirectory($installSource) | Out-Null
-            Write-Output 'ニュース・日時を含む統合パッチを生成しています。'
-            & (Join-Path $PSScriptRoot 'GeneratePatch.exe') $PSScriptRoot $pakDir $installSource
-            if ($LASTEXITCODE -ne 0) { Fail '統合パッチを生成できませんでした。ゲーム版や原本の変更を確認してください。導入済みパッチは変更していません。' }
-            [IO.File]::Copy((Join-Path $PSScriptRoot $managedNames[0]),(Join-Path $installSource $managedNames[0]))
-            $installedFiles = @($manifest.generated_files)
-            foreach ($file in $installedFiles) {
-                if ((Hash (Join-Path $installSource $file.name)) -cne $file.sha256) { Fail '生成したファイルの整合性検査に失敗しました。' }
+            $generatedSource = Join-Path $workDir 'generated'
+            [IO.Directory]::CreateDirectory($generatedSource) | Out-Null
+            Write-Output 'ニュース・日時の対象UI資産を確認しています。'
+            & (Join-Path $PSScriptRoot 'GeneratePatch.exe') $PSScriptRoot $pakDir $generatedSource
+            if ($LASTEXITCODE -eq 2) {
+                Write-Output '対象UI資産が更新されたか、互換性を確認できないため、ニュース・日時の変更を見送ります。'
+                Write-Output '日本語訳とフォント参照設定を導入します。ニュース・日時はゲーム標準の表示になります。'
+            } elseif ($LASTEXITCODE -eq 0) {
+                $installSource = $generatedSource
+                [IO.File]::Copy((Join-Path $PSScriptRoot $managedNames[0]),(Join-Path $installSource $managedNames[0]))
+                $installedFiles = @($manifest.generated_files)
+                foreach ($file in $installedFiles) {
+                    if ((Hash (Join-Path $installSource $file.name)) -cne $file.sha256) { Fail '生成したファイルの整合性検査に失敗しました。' }
+                }
+                $uiPatchApplied = $true
+            } else {
+                Fail '統合パッチを生成できませんでした。ファイルの整合性や書き込み権限を確認してください。導入済みパッチは変更していません。'
             }
         }
         Assert-GameStopped
@@ -279,6 +288,7 @@ try {
             $changed += $stateName
             if ($Action -eq 'Install') {
                 $state = @{schema_version=1; product=$product; patch_version=$manifest.patch_version; files=@($installedFiles)}
+                $state.ui_patch_applied = $uiPatchApplied
                 [IO.File]::WriteAllText($statePath,($state | ConvertTo-Json -Depth 8),$utf8)
                 foreach ($file in $installedFiles) {
                     if ((Hash (Join-Path $pakDir $file.name)) -cne $file.sha256) { Fail 'コピー後の整合性検査に失敗しました。' }
@@ -301,7 +311,11 @@ try {
             }
             Fail '処理に失敗したため、処理前の状態に戻しました。'
         }
-        if ($Action -eq 'Install') { Write-Output '導入完了。ゲームの言語設定で「日本語」を選択してください。' }
+        if ($Action -eq 'Install') {
+            if ($uiPatchApplied) { Write-Output '日本語訳・フォント参照設定・ニュースと日時の変更を導入しました。' }
+            else { Write-Output '日本語訳とフォント参照設定を導入しました。ニュース・日時の変更は含みません。' }
+            Write-Output '導入完了。ゲームの言語設定で「日本語」を選択してください。'
+        }
         else { Write-Output '削除完了。ゲーム本体とセーブデータは変更していません。' }
     }
 } catch {
@@ -323,3 +337,4 @@ try {
     }
     if ($null -ne $lock) { $lock.Dispose(); [IO.File]::Delete($lockPath) }
 }
+exit 0
