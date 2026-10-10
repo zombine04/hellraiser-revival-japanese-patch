@@ -196,7 +196,6 @@ try {
             $manifest = Read-Json (Join-Path $PSScriptRoot 'manifest.json')
             if ($manifest.schema_version -notin @(1,2) -or $manifest.product -cne $product -or $manifest.patch_version -cnotmatch '^\d+\.\d+\.\d+(?:-[a-z0-9.]+)?$') { Fail '配布物の対応情報が不正です。' }
             Assert-FileList $manifest.files
-            $supportedVersions = @(Get-SupportedVersions $manifest.supported_builds)
             foreach ($file in $manifest.files) {
                 if ((Hash (Join-Path $PSScriptRoot $file.name)) -cne $file.sha256) { Fail 'パッチのハッシュが対応情報と一致しません。' }
             }
@@ -208,10 +207,12 @@ try {
                 catch { $installedVersion = '' }
             }
             Assert-RetailGame $GameDir $installedVersion
-            if ($manifest.schema_version -eq 2 -and $installedVersion -cnotin $supportedVersions) {
-                Fail 'このゲーム版は統合パッチ生成に対応していません。対応版用のパッチを使用してください。'
+            # 統合版は生成時の入力・出力ハッシュで判定し、版名の違いでは止めない。
+            # 原本検証を持たない旧配布形式だけは従来の警告と確認を残す。
+            if ($manifest.schema_version -eq 1) {
+                $supportedVersions = @(Get-SupportedVersions $manifest.supported_builds)
+                if ($installedVersion -cnotin $supportedVersions) { Confirm-Unsupported $installedVersion $supportedVersions }
             }
-            if ($installedVersion -cnotin $supportedVersions) { Confirm-Unsupported $installedVersion $supportedVersions }
         }
         $installSource = $PSScriptRoot
         $probeNames = @('Hellraiser_Revival_EnglishProbe_P.pak','Hellraiser_Revival_EnglishProbe_P.utoc','Hellraiser_Revival_EnglishProbe_P.ucas')
@@ -246,7 +247,7 @@ try {
             [IO.Directory]::CreateDirectory($installSource) | Out-Null
             Write-Output 'ニュース・日時を含む統合パッチを生成しています。'
             & (Join-Path $PSScriptRoot 'GeneratePatch.exe') $PSScriptRoot $pakDir $installSource
-            if ($LASTEXITCODE -ne 0) { Fail '統合パッチを生成できませんでした。ゲーム版や原本の変更を確認してください。導入済みパッチは変更していません。' }
+            if ($LASTEXITCODE -ne 0) { Fail '統合パッチを生成できませんでした。対象データの変更やファイルの整合性を確認してください。導入済みパッチは変更していません。' }
             [IO.File]::Copy((Join-Path $PSScriptRoot $managedNames[0]),(Join-Path $installSource $managedNames[0]))
             $installedFiles = @($manifest.generated_files)
             foreach ($file in $installedFiles) {

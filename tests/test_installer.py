@@ -128,11 +128,62 @@ exit $LASTEXITCODE
             self.assertEqual(before,{p.name:p.read_bytes() for p in self.paks.iterdir() if p.is_file()})
             (self.package/'ui-patch.json').write_text(json.dumps(recipe))
 
-    def test_generation_rejects_unsupported_even_when_forced(self):
+    def test_generated_install_reinstall_and_update_accept_different_versions(self):
         self.enable_generation()
-        (self.game/'Version.txt').write_text('1.0.2_HellraiserGame_Shipping_Test')
-        self.run_patch(success=False,allow_unsupported=True)
+        (self.game/'Version.txt').write_text('1.0.2_HellraiserGame_Shipping_Test', encoding='utf-8')
+        self.run_patch() # 非対話でも強制指定は不要。
+        self.run_patch(non_interactive=False, input=b'n\n') # 確認待ちを挟まない。
+        self.prepare('1.1.1');self.enable_generation()
+        (self.game/'Version.txt').write_text('2.0.0_HellraiserGame_Shipping_Next', encoding='utf-8')
+        self.run_patch()
+        self.assertEqual({n:(self.paks/n).read_bytes() for n in NAMES},self.generated)
+        self.run_patch('Uninstall')
         self.assertFalse(any((self.paks/n).exists() for n in NAMES))
+
+    def test_generated_install_accepts_changes_outside_checked_data(self):
+        self.enable_generation()
+        (self.game/'Version.txt').write_text('1.0.2_HellraiserGame_Shipping_Test', encoding='utf-8')
+        self.exe.write_bytes(b'updated-executable')
+        (self.paks/'global.ucas').write_bytes(b'unrelated-game-update')
+        self.original_bytes['global.ucas'] = b'unrelated-game-update'
+        source = self.paks/'pakchunk0-Windows.ucas'
+        source.write_bytes(source.read_bytes() + b'unrelated-trailing-update')
+        self.original_bytes[source.name] = source.read_bytes()
+        self.run_patch()
+        self.assertEqual({n:(self.paks/n).read_bytes() for n in NAMES},self.generated)
+
+    def test_generated_changed_data_preserves_old_install_on_different_version(self):
+        self.enable_generation();self.run_patch()
+        self.prepare('1.1.1');self.enable_generation()
+        (self.game/'Version.txt').write_text('1.0.2_HellraiserGame_Shipping_Test', encoding='utf-8')
+        for name in ('pakchunk0-Windows.utoc', 'pakchunk0-Windows.ucas'):
+            with self.subTest(name=name):
+                source = self.paks/name
+                original = source.read_bytes()
+                changed = bytes([original[0] ^ 1]) + original[1:]
+                source.write_bytes(changed);self.original_bytes[name] = changed
+                before = {p.name:p.read_bytes() for p in self.paks.iterdir() if p.is_file()}
+                for forced in (False, True):
+                    self.run_patch(success=False, allow_unsupported=forced)
+                    self.assertEqual(before, {p.name:p.read_bytes() for p in self.paks.iterdir() if p.is_file()})
+                source.write_bytes(original);self.original_bytes[name] = original
+
+    def test_generated_missing_version_requires_only_retail_identification(self):
+        self.enable_generation()
+        (self.game/'Version.txt').unlink()
+        self.run_patch(success=False)
+        (self.game.parent.parent/'appmanifest_1551980.acf').write_text(
+            '"appid" "1551980" "installdir" "' + self.game.name + '"', encoding='utf-8')
+        self.run_patch()
+        self.assertEqual({n:(self.paks/n).read_bytes() for n in NAMES},self.generated)
+
+    def test_generated_demo_or_unknown_product_is_rejected(self):
+        self.enable_generation()
+        for version in ('1.0.0_HellraiserGameDemo_Shipping_Test', 'UnknownOtherGame'):
+            with self.subTest(version=version):
+                (self.game/'Version.txt').write_text(version, encoding='utf-8')
+                self.run_patch(success=False, allow_unsupported=True)
+                self.assertFalse(any((self.paks/name).exists() for name in NAMES))
 
     def prepare_known_probe(self):
         self.probe={f'Hellraiser_Revival_EnglishProbe_P.{ext}':('自作試作'+ext).encode() for ext in ('pak','utoc','ucas')}
