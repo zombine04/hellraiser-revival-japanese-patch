@@ -6667,7 +6667,7 @@
       "key": "weapon_stats_force",
       "key_hash": 2715024248,
       "source_hash": 2471031793,
-      "ja": "力ずくで開ける",
+      "ja": "衝撃力",
       "status": "reviewed",
       "display_checked": false
     },
