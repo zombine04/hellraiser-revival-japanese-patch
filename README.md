@@ -15,7 +15,7 @@ Clive Barker's Hellraiser: RevivalのWindows／Steam製品版向け非公式日�
 ## 導入
 
 1. ゲームを終了します。
-2. [Releases](https://github.com/zombine04/hellraiser-revival-japanese-patch/releases)から `Hellraiser_Revival_Japanese_v1.1.0.zip` をダウンロードします。「Source code」のZIPは導入用ではありません。
+2. [Releases](https://github.com/zombine04/hellraiser-revival-japanese-patch/releases)から `Hellraiser_Revival_Japanese_v1.2.0.zip` をダウンロードします。「Source code」のZIPは導入用ではありません。
 3. ZIP全体を通常のフォルダーへ展開し、`Install.cmd` を実行します。
 4. Steamの製品版が自動検出されます。見つからない場合は、製品版のインストール先を指定します。
 5. 導入完了の表示を確認してからゲームを起動し、言語設定で**「日本語」**を選択します。
