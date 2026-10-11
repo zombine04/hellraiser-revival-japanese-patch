@@ -20,7 +20,7 @@ from jp_patch.regions import REGIONS, coverage
 
 def check(path, *, release=False):
     binary_names={f'{STEM}.{extension}' for extension in ('pak','utoc','ucas')}
-    names=binary_names | {'Patch.ps1','Install.cmd','Uninstall.cmd','README.md','THIRD_PARTY_NOTICES.md','LICENSE','manifest.json','SHA256SUMS.txt','GeneratePatch.exe','RUNTIME_LICENSES.txt','ui-patch.json'}
+    names=binary_names | {'Patch.ps1','Install.cmd','Uninstall.cmd','README.md','LICENSE','manifest.json','SHA256SUMS.txt','GeneratePatch.exe','RUNTIME_LICENSES.txt','ui-patch.json'}
     with zipfile.ZipFile(path) as archive:
         if len(archive.namelist()) != len(names) or set(archive.namelist()) != names:
             raise ValueError('ZIPの収録物が許可一覧と一致しません')

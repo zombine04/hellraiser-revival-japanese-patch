@@ -9284,7 +9284,7 @@
       "key": "ep02_message_loop2",
       "key_hash": 1967345641,
       "source_hash": 3420066587,
-      "ja": "薬を断てたのは、彼女を見つけたからか？",
+      "ja": "薬を断てたのは、彼女と出会ったからか？",
       "status": "reviewed",
       "display_checked": false
     },
@@ -9404,7 +9404,7 @@
       "key": "ep02_message_loop3",
       "key_hash": 4163906507,
       "source_hash": 123500126,
-      "ja": "薬のためなら、どこまでやる？",
+      "ja": "その渇きを満たすためなら、どこまでやる？",
       "status": "reviewed",
       "display_checked": false
     },
