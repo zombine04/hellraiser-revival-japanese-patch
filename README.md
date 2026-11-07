@@ -7,7 +7,7 @@ Clive Barker's Hellraiser: RevivalのWindows／Steam製品版向け非公式日�
 ## 確認済みのゲーム版と確認範囲
 
 - 確認済みゲーム版: `1.0.1.227219_HellraiserGame_Shipping_27809_ReleasePatch1_Test`
-- 翻訳対象: Game 6,846件とEngineの入力表示164件、計7,010件
+- 翻訳対象（開発版）: Game 6,861件とEngineの入力表示164件、計7,025件
 - ゲーム同梱のNotoSansJPを使用。フォント本体は配布物に含みません
 
 デモ版から原文・識別情報・書式が一致する訳文を引き継ぎ、製品版の追加・変更分を翻訳しています。ユーザーによる全編通しプレイで翻訳を確認済みです。全分岐・全解像度での確認は未完了です。詳細は[確認記録](https://github.com/zombine04/hellraiser-revival-japanese-patch/blob/develop/docs/release-candidate.md)を参照してください。

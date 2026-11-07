@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "game_version": "1.0.1.227219_HellraiserGame_Shipping_27809_ReleasePatch1_Test",
+  "game_version": "1.2.0.227791_HellraiserGame_Shipping_29359_ReleasePatch2_Test",
   "entries": [
     {
       "namespace": "",
@@ -5428,6 +5428,17 @@
       "namespace_hash": 3208543016,
       "key": "Item_Coils.Name",
       "key_hash": 869358074,
+      "source_hash": 1763340531,
+      "source_text_sha256": "02f706597a661d9a4ee57356dfead5f57eb97be9877657ad4838ec842b2bf387",
+      "placeholders": [],
+      "tags": [],
+      "newlines": 0
+    },
+    {
+      "namespace": "Item.Name",
+      "namespace_hash": 3208543016,
+      "key": "Item_CoilsVariant.Name",
+      "key_hash": 933555332,
       "source_hash": 1763340531,
       "source_text_sha256": "02f706597a661d9a4ee57356dfead5f57eb97be9877657ad4838ec842b2bf387",
       "placeholders": [],
@@ -16198,6 +16209,17 @@
     {
       "namespace": "ST_UI_Options",
       "namespace_hash": 1874050209,
+      "key": "fov_description",
+      "key_hash": 1324564241,
+      "source_hash": 1073277285,
+      "source_text_sha256": "0c41d0a17ef71c2bd3f5f53a7ce424a82a1380127212f73548ebfd3d6d352557",
+      "placeholders": [],
+      "tags": [],
+      "newlines": 0
+    },
+    {
+      "namespace": "ST_UI_Options",
+      "namespace_hash": 1874050209,
       "key": "frame_generation_description",
       "key_hash": 3681769768,
       "source_hash": 269694102,
@@ -17298,6 +17320,17 @@
     {
       "namespace": "ST_UI_Options",
       "namespace_hash": 1874050209,
+      "key": "xbox_input_type_psx_description",
+      "key_hash": 2487046645,
+      "source_hash": 624886023,
+      "source_text_sha256": "97f4921885c8b4c1423e762d9674693f95c78378ce9ce8e9b7bad9ce268fbaed",
+      "placeholders": [],
+      "tags": [],
+      "newlines": 0
+    },
+    {
+      "namespace": "ST_UI_Options",
+      "namespace_hash": 1874050209,
       "key": "xbox_speaker_volume_description",
       "key_hash": 270822051,
       "source_hash": 774066625,
@@ -18277,6 +18310,17 @@
     {
       "namespace": "ST_UI_Optionsvolume",
       "namespace_hash": 755479877,
+      "key": "fov_name",
+      "key_hash": 2809856682,
+      "source_hash": 3125826624,
+      "source_text_sha256": "5608c2a19433a83e78e41839e7532b25697b27cbe416718c1cb0c7810ce3eb53",
+      "placeholders": [],
+      "tags": [],
+      "newlines": 0
+    },
+    {
+      "namespace": "ST_UI_Optionsvolume",
+      "namespace_hash": 755479877,
       "key": "frame_limit_verb_imperative",
       "key_hash": 2962187463,
       "source_hash": 2002277234,
@@ -18449,6 +18493,116 @@
       "key_hash": 3347476898,
       "source_hash": 1477506110,
       "source_text_sha256": "9e73f8fa9cb76c441b3118628a15b2bdf4116324954957961bacc171fbead4a3",
+      "placeholders": [],
+      "tags": [],
+      "newlines": 0
+    },
+    {
+      "namespace": "ST_UI_Optionsvolume",
+      "namespace_hash": 755479877,
+      "key": "hdr_max_brightness",
+      "key_hash": 1576693586,
+      "source_hash": 1029521974,
+      "source_text_sha256": "596770301952134a912dd55486e8d16462ebd57a08d266038323936829f66cba",
+      "placeholders": [],
+      "tags": [],
+      "newlines": 0
+    },
+    {
+      "namespace": "ST_UI_Optionsvolume",
+      "namespace_hash": 755479877,
+      "key": "hdr_max_brightness_description",
+      "key_hash": 4032957035,
+      "source_hash": 2297071676,
+      "source_text_sha256": "43cd2eff59f0a3cfa87b611cae1939e5653ef814d0bfb568c34461abef12725e",
+      "placeholders": [],
+      "tags": [],
+      "newlines": 0
+    },
+    {
+      "namespace": "ST_UI_Optionsvolume",
+      "namespace_hash": 755479877,
+      "key": "hdr_name",
+      "key_hash": 2026200256,
+      "source_hash": 2171145311,
+      "source_text_sha256": "607901812664e2261afcea97bdb6b6f74ab4a91cf88987b2dec0e46f31139b05",
+      "placeholders": [],
+      "tags": [],
+      "newlines": 0
+    },
+    {
+      "namespace": "ST_UI_Optionsvolume",
+      "namespace_hash": 755479877,
+      "key": "hdr_paper_white",
+      "key_hash": 3966780695,
+      "source_hash": 1758484746,
+      "source_text_sha256": "100611196701744eb44bb2f0cf2b6130f48f123a7227a6222abc00cd4ea71c68",
+      "placeholders": [],
+      "tags": [],
+      "newlines": 0
+    },
+    {
+      "namespace": "ST_UI_Optionsvolume",
+      "namespace_hash": 755479877,
+      "key": "hdr_paper_white_description",
+      "key_hash": 2384697312,
+      "source_hash": 3148167169,
+      "source_text_sha256": "b8af7b1e596dbb4f40610863c1c43a8d06412b05ee688f30c3d30a3c891bee3f",
+      "placeholders": [],
+      "tags": [],
+      "newlines": 0
+    },
+    {
+      "namespace": "ST_UI_Optionsvolume",
+      "namespace_hash": 755479877,
+      "key": "hdr_saturation",
+      "key_hash": 613523794,
+      "source_hash": 3843797464,
+      "source_text_sha256": "189b86c0af1fbcc359ec57d8d195ef7e374247295d02b314b6b8ac6f72588839",
+      "placeholders": [],
+      "tags": [],
+      "newlines": 0
+    },
+    {
+      "namespace": "ST_UI_Optionsvolume",
+      "namespace_hash": 755479877,
+      "key": "hdr_saturation_description",
+      "key_hash": 148146291,
+      "source_hash": 4141527418,
+      "source_text_sha256": "b9b1e8e43c0a43dd84a4e0ef65bf5a83e79a43cd6893e20412450844d9c4d8ff",
+      "placeholders": [],
+      "tags": [],
+      "newlines": 0
+    },
+    {
+      "namespace": "ST_UI_Optionsvolume",
+      "namespace_hash": 755479877,
+      "key": "hdr_settings",
+      "key_hash": 880807644,
+      "source_hash": 3008500065,
+      "source_text_sha256": "6c5c7fdcaab0f81d211fa89e6df511a0172a41cdfb22e135b0764258c2054fa1",
+      "placeholders": [],
+      "tags": [],
+      "newlines": 0
+    },
+    {
+      "namespace": "ST_UI_Optionsvolume",
+      "namespace_hash": 755479877,
+      "key": "hdr_tone_mapping",
+      "key_hash": 2011440598,
+      "source_hash": 2897528092,
+      "source_text_sha256": "a8ee17889ce46c7dea5c336a845b46d020d3226038924e01d89b7b05f43cad4d",
+      "placeholders": [],
+      "tags": [],
+      "newlines": 0
+    },
+    {
+      "namespace": "ST_UI_Optionsvolume",
+      "namespace_hash": 755479877,
+      "key": "hdr_tone_mapping_description",
+      "key_hash": 3716082214,
+      "source_hash": 4193405044,
+      "source_text_sha256": "a286607f3e4892c500625cce2a0697b5e034c31bf2869564d5395c10d2e91414",
       "placeholders": [],
       "tags": [],
       "newlines": 0
@@ -20190,6 +20344,17 @@
       "key_hash": 3958006886,
       "source_hash": 751111251,
       "source_text_sha256": "59e1fd02f6c20f7e1cc84937c36e22ec9574fc3fba67ea9a88bd8df9c456fb34",
+      "placeholders": [],
+      "tags": [],
+      "newlines": 0
+    },
+    {
+      "namespace": "ST_UI_Optionsvolume",
+      "namespace_hash": 755479877,
+      "key": "xbox_dualsense_controller_verb_imperative",
+      "key_hash": 3594079513,
+      "source_hash": 2991859014,
+      "source_text_sha256": "feb9e8064ee943370801bf1b9f119702be881f57925481ac93b78fc6e8b3aabe",
       "placeholders": [],
       "tags": [],
       "newlines": 0

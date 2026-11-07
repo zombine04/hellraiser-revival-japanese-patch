@@ -10563,6 +10563,147 @@
       "ja": "グラフィックボードのドライバーを最新版に更新してください。",
       "status": "reviewed",
       "display_checked": false
+    },
+    {
+      "namespace": "ST_UI_Options",
+      "namespace_hash": 1874050209,
+      "key": "fov_description",
+      "key_hash": 1324564241,
+      "source_hash": 1073277285,
+      "ja": "ゲームプレイ中の視野角を設定します。値を上げると周囲が広く見え、下げると視野が狭まり、対象が拡大されます。調整することで画面酔いを軽減できる場合があります。",
+      "status": "reviewed",
+      "display_checked": false
+    },
+    {
+      "namespace": "ST_UI_Options",
+      "namespace_hash": 1874050209,
+      "key": "xbox_input_type_psx_description",
+      "key_hash": 2487046645,
+      "source_hash": 624886023,
+      "ja": "DualSense®コントローラーに最適化された設定です。",
+      "status": "reviewed",
+      "display_checked": false
+    },
+    {
+      "namespace": "ST_UI_Optionsvolume",
+      "namespace_hash": 755479877,
+      "key": "fov_name",
+      "key_hash": 2809856682,
+      "source_hash": 3125826624,
+      "ja": "視野角",
+      "status": "reviewed",
+      "display_checked": false
+    },
+    {
+      "namespace": "ST_UI_Optionsvolume",
+      "namespace_hash": 755479877,
+      "key": "hdr_max_brightness",
+      "key_hash": 1576693586,
+      "source_hash": 1029521974,
+      "ja": "最大輝度",
+      "status": "reviewed",
+      "display_checked": false
+    },
+    {
+      "namespace": "ST_UI_Optionsvolume",
+      "namespace_hash": 755479877,
+      "key": "hdr_max_brightness_description",
+      "key_hash": 4032957035,
+      "source_hash": 2297071676,
+      "ja": "出力する最大輝度をニト単位で設定します。",
+      "status": "reviewed",
+      "display_checked": false
+    },
+    {
+      "namespace": "ST_UI_Optionsvolume",
+      "namespace_hash": 755479877,
+      "key": "hdr_name",
+      "key_hash": 2026200256,
+      "source_hash": 2171145311,
+      "ja": "HDR",
+      "status": "reviewed",
+      "display_checked": false,
+      "retained_reason": "映像設定で一般的に使われる規格の略称のため、HDR表記を維持する。"
+    },
+    {
+      "namespace": "ST_UI_Optionsvolume",
+      "namespace_hash": 755479877,
+      "key": "hdr_paper_white",
+      "key_hash": 3966780695,
+      "source_hash": 1758484746,
+      "ja": "ペーパーホワイト",
+      "status": "reviewed",
+      "display_checked": false
+    },
+    {
+      "namespace": "ST_UI_Optionsvolume",
+      "namespace_hash": 755479877,
+      "key": "hdr_paper_white_description",
+      "key_hash": 2384697312,
+      "source_hash": 3148167169,
+      "ja": "ユーザーインターフェースの基準輝度をニト単位で設定します。",
+      "status": "reviewed",
+      "display_checked": false
+    },
+    {
+      "namespace": "ST_UI_Optionsvolume",
+      "namespace_hash": 755479877,
+      "key": "hdr_saturation",
+      "key_hash": 613523794,
+      "source_hash": 3843797464,
+      "ja": "HDRの彩度",
+      "status": "reviewed",
+      "display_checked": false
+    },
+    {
+      "namespace": "ST_UI_Optionsvolume",
+      "namespace_hash": 755479877,
+      "key": "hdr_saturation_description",
+      "key_hash": 148146291,
+      "source_hash": 4141527418,
+      "ja": "ディスプレイの色域に応じて、色の鮮やかさを設定します。",
+      "status": "reviewed",
+      "display_checked": false
+    },
+    {
+      "namespace": "ST_UI_Optionsvolume",
+      "namespace_hash": 755479877,
+      "key": "hdr_settings",
+      "key_hash": 880807644,
+      "source_hash": 3008500065,
+      "ja": "HDR設定",
+      "status": "reviewed",
+      "display_checked": false
+    },
+    {
+      "namespace": "ST_UI_Optionsvolume",
+      "namespace_hash": 755479877,
+      "key": "hdr_tone_mapping",
+      "key_hash": 2011440598,
+      "source_hash": 2897528092,
+      "ja": "トーンマッピングの中間点",
+      "status": "reviewed",
+      "display_checked": false
+    },
+    {
+      "namespace": "ST_UI_Optionsvolume",
+      "namespace_hash": 755479877,
+      "key": "hdr_tone_mapping_description",
+      "key_hash": 3716082214,
+      "source_hash": 4193405044,
+      "ja": "トーンマッピング曲線の中間点を設定します。",
+      "status": "reviewed",
+      "display_checked": false
+    },
+    {
+      "namespace": "ST_UI_Optionsvolume",
+      "namespace_hash": 755479877,
+      "key": "xbox_dualsense_controller_verb_imperative",
+      "key_hash": 3594079513,
+      "source_hash": 2991859014,
+      "ja": "DualSense®コントローラー",
+      "status": "reviewed",
+      "display_checked": false
     }
   ]
 }
