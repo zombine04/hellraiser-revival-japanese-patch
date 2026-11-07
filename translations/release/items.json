@@ -10208,6 +10208,16 @@
       "status": "reviewed",
       "display_checked": false,
       "retained_reason": "数字の時刻表示を保持。日本語へ置換する語句を含まない。"
+    },
+    {
+      "namespace": "Item.Name",
+      "namespace_hash": 3208543016,
+      "key": "Item_CoilsVariant.Name",
+      "key_hash": 933555332,
+      "source_hash": 1763340531,
+      "ja": "コイル",
+      "status": "reviewed",
+      "display_checked": false
     }
   ]
 }
