@@ -7,15 +7,17 @@ Clive Barker's Hellraiser: RevivalのWindows／Steam製品版向け非公式日�
 ## 確認済みのゲーム版と確認範囲
 
 - 確認済みゲーム版: `1.0.1.227219_HellraiserGame_Shipping_27809_ReleasePatch1_Test`
-- 翻訳対象（開発版）: Game 6,861件とEngineの入力表示164件、計7,025件
+- 翻訳対象: Game 6,861件とEngineの入力表示164件、計7,025件
 - ゲーム同梱のNotoSansJPを使用。フォント本体は配布物に含みません
 
 デモ版から原文・識別情報・書式が一致する訳文を引き継ぎ、製品版の追加・変更分を翻訳しています。ユーザーによる全編通しプレイで翻訳を確認済みです。全分岐・全解像度での確認は未完了です。詳細は[確認記録](https://github.com/zombine04/hellraiser-revival-japanese-patch/blob/develop/docs/release-candidate.md)を参照してください。
 
+v1.2.2はゲーム `1.2.0.227791_HellraiserGame_Shipping_29359_ReleasePatch2_Test` の追加15件とニュースUI更新に対応しています。新原本からのパッチ生成は検証済みですが、今回の追加訳・更新後のニュースUIの実機表示は未確認です。
+
 ## 導入
 
 1. ゲームを終了します。
-2. [Releases](https://github.com/zombine04/hellraiser-revival-japanese-patch/releases)から `Hellraiser_Revival_Japanese_v1.2.1.zip` をダウンロードします。「Source code」のZIPは導入用ではありません。
+2. [Releases](https://github.com/zombine04/hellraiser-revival-japanese-patch/releases)から `Hellraiser_Revival_Japanese_v1.2.2.zip` をダウンロードします。「Source code」のZIPは導入用ではありません。
 3. ZIP全体を通常のフォルダーへ展開し、`Install.cmd` を実行します。
 4. Steamの製品版が自動検出されます。見つからない場合は、製品版のインストール先を指定します。
 5. 導入完了の表示を確認してからゲームを起動し、言語設定で**「日本語」**を選択します。
