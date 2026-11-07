@@ -24,9 +24,13 @@ STEM = 'Hellraiser_Revival_Japanese_P'
 def build_fonts(work, stem=STEM):
     staging = work/'fonts'
     write_assets(staging)
+    # Retocのフォルダー列挙はOS依存。Pakのソート済み索引で資産順を固定する。
+    font_pak = work/'fonts.pak'
+    subprocess.run([str(repak()),'pack',str(staging),str(font_pak),'--version','V11','--quiet'],
+                   check=True,capture_output=True,env=os.environ | {'RAYON_NUM_THREADS':'1'})
     iostore = work/'iostore'/f'{stem}.utoc'
     iostore.parent.mkdir(parents=True)
-    subprocess.run([str(retoc()),'to-zen',str(staging),str(iostore),'--version','UE5_6','--no-parallel'],check=True,capture_output=True)
+    subprocess.run([str(retoc()),'to-zen',str(font_pak),str(iostore),'--version','UE5_6','--no-parallel'],check=True,capture_output=True)
     listing = subprocess.run([str(retoc()),'list',str(iostore),'--path'],check=True,capture_output=True,text=True).stdout.splitlines()
     expected = {f'../../../Hellraiser/Content/UI/Font/{asset}.uasset' for asset in ASSETS}
     paths = {line.split()[-1] for line in listing if 'ExportBundleData' in line}
