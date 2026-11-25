@@ -125,12 +125,12 @@ exit $LASTEXITCODE
         self.assertFalse(state['ui_patch_applied'])
         self.assertEqual(state['files'], self.manifest['files'])
 
-    def enable_generation(self, chunk_count=2):
+    def enable_generation(self):
         helper=ROOT/'.local/runtime/GeneratePatch.exe'
         self.assertTrue(helper.is_file(),'先にscripts/build_runtime.pyを実行してください')
         shutil.copyfile(helper,self.package/'GeneratePatch.exe')
         (self.package/'RUNTIME_LICENSES.txt').write_text('自作試験の説明',encoding='utf-8')
-        self.ui_sources = [('自作のUI資産'+str(i)).encode() for i in range(chunk_count)]
+        self.ui_sources = [('自作のUI資産'+str(i)).encode() for i in range(3)]
         self.write_ui_container()
         self.write_ui_container(stem='pakchunk0optional-Windows', payloads=[])
         outputs=[];self.generated={NAMES[0]:(self.package/NAMES[0]).read_bytes()}
@@ -149,7 +149,7 @@ exit $LASTEXITCODE
 
     def test_generated_install_update_and_remove_without_sources(self):
         self.run_patch() # v1の管理情報から更新
-        self.prepare('1.1.0');self.enable_generation(chunk_count=3);self.run_patch()
+        self.prepare('1.1.0');self.enable_generation();self.run_patch()
         self.assertEqual({n:(self.paks/n).read_bytes() for n in NAMES},self.generated)
         self.run_patch() # 再導入
         self.prepare('1.1.1');self.enable_generation();self.run_patch()
@@ -202,9 +202,10 @@ exit $LASTEXITCODE
         self.enable_generation();self.run_patch()
         self.prepare('1.1.1');self.enable_generation()
         (self.game/'Version.txt').write_text('1.0.2_HellraiserGame_Shipping_Test', encoding='utf-8')
-        for i, raw in enumerate(self.ui_sources):
+        for i in range(3):
             with self.subTest(chunk=i):
                 payloads = list(zip(CHUNK_IDS, self.ui_sources))
+                raw = self.ui_sources[i]
                 payloads[i] = (CHUNK_IDS[i], bytes([raw[0]^1])+raw[1:])
                 self.write_ui_container(payloads=payloads)
                 self.run_patch();self.assert_basic_install()
@@ -221,7 +222,7 @@ exit $LASTEXITCODE
         self.write_ui_container(payloads=[(cid,b'updated UI') for cid in CHUNK_IDS])
         result=self.run_patch(non_interactive=False,input=b'n\n')
         self.assert_basic_install()
-        self.assertIn('セーブ日時の変更を見送ります。',result.stdout.decode('utf-8'))
+        self.assertIn('ニュース・日時の変更を見送ります。',result.stdout.decode('utf-8'))
 
     def test_generated_accepts_relocated_reordered_recompressed_chunks(self):
         self.enable_generation()
