@@ -24,7 +24,7 @@ def runtime_files():
 
 def read_recipe():
     raw=(ROOT/'distribution/ui-patch.json').read_bytes();recipe=json.loads(raw)
-    if set(recipe)!={'schema_version','seed_sha256','chunks','outputs'} or recipe['schema_version']!=2 or len(recipe['chunks'])!=3:raise ValueError('変更手順の形式が不正です')
+    if set(recipe)!={'schema_version','seed_sha256','chunks','outputs'} or recipe['schema_version']!=2 or len(recipe['chunks']) not in (2,3):raise ValueError('変更手順の形式が不正です')
     hashes=[recipe['seed_sha256']];seen=set()
     for chunk in recipe['chunks']:
         if set(chunk)!={'chunk_id','size','sha256'}:raise ValueError('対象資産の情報が不正です')
@@ -41,7 +41,7 @@ def read_recipe():
         for op in output['ops']:
             if set(op)=={'copy'}:
                 source,offset,count=op['copy']
-                if source not in range(4) or offset<0 or count<=0:raise ValueError('コピー範囲が不正です')
+                if source not in range(len(recipe['chunks'])+1) or offset<0 or count<=0:raise ValueError('コピー範囲が不正です')
                 if source and offset+count>recipe['chunks'][source-1]['size']:raise ValueError('コピー範囲が不正です')
                 length+=count
             elif set(op)=={'data'}:

@@ -78,7 +78,7 @@ fn assemble(output: &Output, sources: &[Vec<u8>]) -> Result<Vec<u8>> {
 fn generate(package: &Path, paks: &Path, destination: &Path) -> Result<()> {
     for path in [package, paks, destination] { no_links(path)?; }
     let recipe: Recipe = serde_json::from_slice(&read_small(&package.join("ui-patch.json"), 2_000_000)?)?;
-    if recipe.schema_version != 2 || recipe.chunks.len() != 3 || recipe.outputs.len() != 2 || !valid_hash(&recipe.seed_sha256) { return fail("変更手順の形式が不正です。"); }
+    if recipe.schema_version != 2 || !(2..=3).contains(&recipe.chunks.len()) || recipe.outputs.len() != 2 || !valid_hash(&recipe.seed_sha256) { return fail("変更手順の形式が不正です。"); }
     let seed = read_small(&package.join(format!("{STEM}.ucas")), 2_000_000)?;
     matches(&seed, &recipe.seed_sha256)?;
     let mut lengths = vec![seed.len()];
