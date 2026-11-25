@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "game_version": "1.2.0.227791_HellraiserGame_Shipping_29359_ReleasePatch2_Test",
+  "game_version": "1.3.0.228270_HellraiserGame_Shipping_30967_ReleasePatch3_Test",
   "entries": [
     {
       "namespace": "",
@@ -18312,8 +18312,8 @@
       "namespace_hash": 755479877,
       "key": "fov_name",
       "key_hash": 2809856682,
-      "source_hash": 3125826624,
-      "source_text_sha256": "5608c2a19433a83e78e41839e7532b25697b27cbe416718c1cb0c7810ce3eb53",
+      "source_hash": 3092255357,
+      "source_text_sha256": "4c20ae062f9a4c32a64aa5fc8b05d30eddcb1ebe7f7c58c8d552f71f7d6f89e4",
       "placeholders": [],
       "tags": [],
       "newlines": 0

@@ -245,11 +245,11 @@ try {
             Assert-FileList $manifest.generated_files
             $generatedSource = Join-Path $workDir 'generated'
             [IO.Directory]::CreateDirectory($generatedSource) | Out-Null
-            Write-Output 'ニュース・日時の対象UI資産を確認しています。'
+            Write-Output 'セーブ日時の対象UI資産を確認しています。'
             & (Join-Path $PSScriptRoot 'GeneratePatch.exe') $PSScriptRoot $pakDir $generatedSource
             if ($LASTEXITCODE -eq 2) {
-                Write-Output '対象UI資産が更新されたか、互換性を確認できないため、ニュース・日時の変更を見送ります。'
-                Write-Output '日本語訳とフォント参照設定を導入します。ニュース・日時はゲーム標準の表示になります。'
+                Write-Output '対象UI資産が更新されたか、互換性を確認できないため、セーブ日時の変更を見送ります。'
+                Write-Output '日本語訳とフォント参照設定を導入します。セーブ日時はゲーム標準の表示になります。'
             } elseif ($LASTEXITCODE -eq 0) {
                 $installSource = $generatedSource
                 [IO.File]::Copy((Join-Path $PSScriptRoot $managedNames[0]),(Join-Path $installSource $managedNames[0]))
@@ -312,8 +312,8 @@ try {
             Fail '処理に失敗したため、処理前の状態に戻しました。'
         }
         if ($Action -eq 'Install') {
-            if ($uiPatchApplied) { Write-Output '日本語訳・フォント参照設定・ニュースと日時の変更を導入しました。' }
-            else { Write-Output '日本語訳とフォント参照設定を導入しました。ニュース・日時の変更は含みません。' }
+            if ($uiPatchApplied) { Write-Output '日本語訳・フォント参照設定・セーブ日時の変更を導入しました。' }
+            else { Write-Output '日本語訳とフォント参照設定を導入しました。セーブ日時はゲーム標準の表示になります。' }
             Write-Output '導入完了。ゲームの言語設定で「日本語」を選択してください。'
         }
         else { Write-Output '削除完了。ゲーム本体とセーブデータは変更していません。' }
